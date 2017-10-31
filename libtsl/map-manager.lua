@@ -67,12 +67,18 @@ function manager.addMap(data, id)
 
 end
 
+-- If there are multiple tilesets in use on a single map
+-- then some of the tileset indexes used will have an offset.
+-- This function returns the tileset image path to use and
+-- the true tileset index for use with tilesetManager.
 function manager.findTileset(map, tilesetIndex)
   for i = #map.tilesetMetadata, 1, -1 do
     if tilesetIndex >= map.tilesetMetadata[i].firstTileIndex then
       return map.tilesetMetadata[i].image, (tilesetIndex - map.tilesetMetadata[i].firstTileIndex + 1)
     end
   end
+
+  return nil, 0
 end
 
 function manager.drawMap(id)
@@ -90,9 +96,8 @@ function manager.drawMap(id)
           local tilesetIndex = layer.data[j]
 
           if tilesetIndex ~= 0 then
-            -- If there are multiple tilesets in use then
-            -- some of the tilesetIndexes will have an offeset
             local imagePath, imageTilesetIndex = manager.findTileset(map, tilesetIndex)
+            -- TODO: Check if animated tile?
             tilesetManager.drawTile(imagePath, imageTilesetIndex, drawX, drawY)
           end
 
