@@ -29,6 +29,7 @@ function manager.addMap(data, id)
                                    -- adheres to source code naming conventions, the
                                    -- second is used by Tiled)
   map.tileHeight = data.tileheight
+  map.tilesetMetadata = {}
   map.layers = {}
 
   -- We only capture information required to
@@ -37,7 +38,12 @@ function manager.addMap(data, id)
     if not tilesetManager.hasTileset(d.image) then
       tilesetManager.defineTileset(d.image, d.imagewidth, d.imageheight, map.tileWidth, map.tileHeight)
 
-      map.tilesetImagePath = d.image -- WARNING: This is a hack until we can add support for multiple tilesets per map
+      local tilesetInfo = {}
+      tilesetInfo.image = d.image
+      tilesetInfo.firstTileIndex = d.firstgid
+      table.insert(map.tilesetMetadata, tilesetInfo)
+
+      --map.tilesetImagePath = d.image -- WARNING: This is a hack until we can add support for multiple tilesets per map
     end
   end
 
@@ -61,6 +67,13 @@ function manager.addMap(data, id)
 
 end
 
+function manager.findTileset(map, tilesetIndex)
+  for i = #map.tilesetMetadata, 1, -1 do
+    if tilesetIndex >= map.tilesetMetadata[i].firstTileIndex then
+      return map.tilesetMetadata[i].image, (tilesetIndex - map.tilesetMetadata[i].firstTileIndex + 1)
+    end
+  end
+end
 
 function manager.drawMap(id)
 
@@ -77,8 +90,10 @@ function manager.drawMap(id)
           local tilesetIndex = layer.data[j]
 
           if tilesetIndex ~= 0 then
-            local imagePath = map.tilesetImagePath -- WARNING: This is a hack until we can add support for multiple tilesets per map
-            tilesetManager.drawTile(imagePath, tilesetIndex, drawX, drawY)
+            -- If there are multiple tilesets in use then
+            -- some of the tilesetIndexes will have an offeset
+            local imagePath, imageTilesetIndex = manager.findTileset(map, tilesetIndex)
+            tilesetManager.drawTile(imagePath, imageTilesetIndex, drawX, drawY)
           end
 
         end -- map tiles
