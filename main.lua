@@ -3,9 +3,6 @@
 
 function love.load()
 
-  -- Global aliases
-  g = love.graphics
-
   -- My personal lua library for love2d development
   game        = require 'libtsl.scene-manager'
   game.timer  = require 'libtsl.timer'

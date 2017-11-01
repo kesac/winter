@@ -114,7 +114,7 @@ function lib._drawTile(imagePath, tileIndex, x, y)
   -- Does the desired tileset exist?
   -- Is the desired tileIndex within the dimensions of the tileset?
   if tilesetRenderData and tileIndex >= 1 and tileIndex <= #tilesetRenderData.quads then
-    love.graphics.draw(tilesetRenderData.image, tilesetRenderData.quads[tileIndex], x, y)
+    love.graphics.draw(tilesetRenderData.image, tilesetRenderData.quads[tileIndex], math.floor(x), math.floor(y))
   end
 end
 
@@ -155,9 +155,9 @@ function lib.drawMap(id)
             lib._drawTile(imagePath, imageTilesetIndex, drawX, drawY)
           end
 
-        end -- map tiles
+        end -- for map tiles
       end -- if drawable
-    end -- layers
+    end -- for layers
   end -- if map exists
 
 end

@@ -11,6 +11,7 @@
 
 local scene = {}
 local world = {}
+local camera = require 'libtsl.camera'
 local mapManager = require 'libtsl.map-manager'
 
 -- Placeholder variables
@@ -35,6 +36,7 @@ function scene.initialize(manager)
 
     world.player.x = 0
     world.player.y = 0
+    camera.follow(world.player)
 end
 
 function scene.load()
@@ -49,17 +51,24 @@ function scene.unload()
 end
 
 function scene.update(dt)
+
 	-- update entities
   world.player.update(dt)
   -- update animations?
+  camera.update(dt)
 end
 
 function scene.draw()
+  love.graphics.push()
+  love.graphics.translate(camera.x, camera.y)
+
   mapManager.drawMap('prototype')
   -- draw layers below
   -- draw layers at player's level
   world.player.draw()
   -- draw layers above
+
+  love.graphics.pop()
 
 end
 

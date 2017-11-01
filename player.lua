@@ -6,7 +6,7 @@ player.x = 0
 player.y = 0
 player.canMove = true
 player.isMoving = false -- Used receive one directional button action at a time
-player.speed = 100
+player.speed = 250
 player.direction = 'down'
 
 -- This will eventually handle player input, collision, sprite state,
@@ -46,7 +46,7 @@ end
 -- This will eventually handle rendering the player sprite
 function player.draw()
   love.graphics.setColor(100,255,255)
-  love.graphics.circle('fill', player.x, player.y, 5, 10)
+  love.graphics.circle('fill', math.floor(player.x), math.floor(player.y), 20, 10)
 end
 
 function player.keypressed(key, scancode, isrepeat)
