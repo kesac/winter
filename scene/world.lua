@@ -31,7 +31,7 @@ function scene.initialize(manager)
     -- called when this scene is added to a scenemanager
     -- passes the manager as the only argument
 
-    mapManager.addMap(require 'maps.prototype', 'prototype')
+    mapManager.cacheMap(require 'maps.prototype', 'prototype')
 
 end
 
