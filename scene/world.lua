@@ -14,7 +14,7 @@ local world = {}
 local mapManager = require 'libtsl.map-manager'
 
 -- Placeholder variables
-world.player = {}
+world.player = require 'player'
 world.entities = {}
 world.entities.all = {}
 world.entities.current = {}
@@ -33,6 +33,8 @@ function scene.initialize(manager)
 
     mapManager.cacheMap(require 'maps.prototype', 'prototype')
 
+    world.player.x = 0
+    world.player.y = 0
 end
 
 function scene.load()
@@ -48,7 +50,7 @@ end
 
 function scene.update(dt)
 	-- update entities
-  -- update player
+  world.player.update(dt)
   -- update animations?
 end
 
@@ -56,7 +58,7 @@ function scene.draw()
   mapManager.drawMap('prototype')
   -- draw layers below
   -- draw layers at player's level
-  -- draw player and all entities
+  world.player.draw()
   -- draw layers above
 
 end

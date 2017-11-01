@@ -135,6 +135,8 @@ end
 
 function lib.drawMap(id)
 
+  love.graphics.setColor(255,255,255,255)
+
   if maps[id] then
     local map = maps[id]
 
