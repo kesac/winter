@@ -4,15 +4,19 @@
 function love.load()
 
   -- My personal lua library for love2d development
-  game        = require 'libtsl.scene-manager'
-  game.timer  = require 'libtsl.timer'
-  game.utf8   = require 'libtsl.utf8'
-  game.font   = require 'libtsl.font'
-  game.text   = require 'libtsl.textbox'
+  game         = require 'libtsl.scene-manager'
+  game.timer   = require 'libtsl.timer'
+  game.utf8    = require 'libtsl.utf8'
+  game.font    = require 'libtsl.font'
+  game.textbox = require 'libtsl.textbox'
+
+  -- External libraries for love2d games
+  game.flux   = require 'lib.flux'
+  game.anim8  = require 'lib.anim8'
 
   -- Setup
   game.font.setDefaultFont('fonts/PressStart2P/PressStart2P.ttf')
-	game.text.init(game.font.get(16))
+	game.textbox.init(game.font.get(16))
 
   game.addScene(require 'scene.test-text-1', 'test-text-1')
   game.addScene(require 'scene.test-text-2', 'test-text-2')
@@ -24,21 +28,22 @@ function love.load()
 end
 
 function love.update(dt)
-  game.update(dt)
-  game.text.update(dt)
+  game.flux.update(dt)
   game.timer.update(dt)
+  game.textbox.update(dt)
+  game.update(dt)
 end
 
 function love.draw()
   game.draw()
-  game.text.draw()
+  game.textbox.draw()
 end
 
 function love.keypressed(key, scancode, isrepeat)
   game.keypressed(key, scancode)
 
   if key == "space" or key == "return" then
-    game.text.advanceText()
+    game.textbox.advanceText()
   end
 end
 
