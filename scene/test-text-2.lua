@@ -4,7 +4,7 @@ local scene = {}
 
 function scene.load()
 
-  game.text.displayText(
+  game.textbox.displayText(
 		{
       "{@3}",
 			"This demo comes with a basic",
@@ -34,7 +34,7 @@ function scene.load()
 end
 
 function scene.draw()
-  g.clear(255,255,255)
+  love.graphics.clear(255,255,255)
 end
 
 return scene
