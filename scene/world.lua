@@ -11,39 +11,27 @@
 
 local scene = {}
 local world = {}
-local camera = require 'libtsl.camera'
-local mapManager = require 'libtsl.map-manager'
-
--- Placeholder variables
+world.camera = require 'libtsl.camera'
+world.maps = require 'libtsl.map-manager'
 world.player = require 'player'
 world.entities = {}
 world.entities.all = {}
 world.entities.current = {}
-world.maps = {}
-world.maps.all = {}
-world.maps.current = {}
-world.maps.current.events = {}
-world.maps.current.layers = {}
-world.maps.current.layers.below = {}
-world.maps.current.layers.player = {}
-world.maps.current.layers.above = {}
 
 function scene.initialize(manager)
-    -- called when this scene is added to a scenemanager
-    -- passes the manager as the only argument
-
-    mapManager.cacheMap(require 'maps.prototype', 'prototype')
-
-    world.player.x = 0
-    world.player.y = 0
-    camera.follow(world.player)
+    world.maps.loadTileset('overworld-tileset', 'maps/tilesets/overworld-tileset.png', 32, 32)
+    world.maps.loadTileset('overworld-mountains', 'maps/tilesets/overworld-mountains.png', 32, 32)
+    world.maps.loadTileset('overworld-water', 'maps/tilesets/overworld-water.png', 32, 32)
+    world.maps.defineTileAnimation('overworld-water', 1, 1, 15)
+    world.maps.loadMap('prototype', require 'maps.prototype')
+    world.maps.setCurrentMap('prototype')
 end
 
 function scene.load()
-    -- called when the scene becomes the current scene
-
-    -- load all maps
-
+    world.player.x = 0
+    world.player.y = 0
+    world.camera.follow(world.player)
+    love.graphics.setDefaultFilter('nearest', 'nearest')
 end
 
 function scene.unload()
@@ -53,27 +41,38 @@ end
 function scene.update(dt)
 
 	-- update entities
+  world.maps.update(dt)
   world.player.update(dt)
   -- update animations?
-  camera.update(dt)
+  world.camera.update(dt)
 end
 
 function scene.draw()
+
   love.graphics.push()
-  love.graphics.translate(camera.x, camera.y)
-
-  mapManager.drawMap('prototype')
-  -- draw layers below
-  -- draw layers at player's level
+  love.graphics.translate(world.camera.x, world.camera.y)
+  love.graphics.scale(world.camera.scale)
+  love.graphics.rotate(0.2)
+  world.maps.draw()
   world.player.draw()
-  -- draw layers above
-
   love.graphics.pop()
 
 end
 
 function scene.keypressed(key,unicode)
 	-- called when the scene needs to handle a keypressed event
+  if key == "1" then
+    world.camera.zoom(1)
+  elseif key == "2" then
+    world.camera.zoom(1.5)
+  elseif key == "3" then
+    world.camera.zoom(4)
+  elseif key == "4" then
+    world.camera.move(0,0)
+  elseif key == "5" then
+    world.camera.follow(world.player)
+  end
+
 end
 
 function scene.keyreleased(key,unicode)

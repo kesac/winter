@@ -12,19 +12,76 @@
   * Rendering map data on screen
 --]]
 
-local lib      = {}
-local maps     = {}
-local tilesetRenderCache = {} -- Each entry is a table containing: loaded image and quads for that image
+local lib        = {}
+local canvas     = love.graphics.newCanvas(800, 600)
+local maps       = {}
+local currentMap = nil
+local tilesetRenderCache = {}
+local tileMath   = require 'libtsl.tile-math'
 
-local tileMath = require 'libtsl.tile-math'
-lib.mapsFolder = 'maps/'
+function lib.setCurrentMap(id)
+  if maps[id] then
+    currentMap = maps[id]
+  end
+end
 
+-- Loads images into memory and calculates quads for later lookup.
+function lib.loadTileset(tilesetId, imagePath, tileWidth, tileHeight)
+
+  local tilesetRenderData = {}
+  tilesetRenderData.id = tilesetId
+  tilesetRenderData.image = love.graphics.newImage(imagePath)
+  tilesetRenderData.tileWidth = tileWidth
+  tilesetRenderData.tileHeight = tileHeight
+  tilesetRenderData.quads = {}
+  tilesetRenderData.animations = {}
+
+  local imageWidth = tilesetRenderData.image:getWidth()
+  local imageHeight = tilesetRenderData.image:getHeight()
+  local totalColumns = imageWidth/tileWidth
+  local totalRows = imageHeight/tileHeight
+  local totalTiles = totalColumns * totalRows
+
+  -- Quads are pre-calculated to line up with tileset indexes for the tileset
+  -- (Given a 3x3 tileset, index 1 is always the top-left most tile and index 9 is the
+  -- bottom-right most tile)
+  for i = 1, totalTiles do
+    local x = tileMath.tileIndexToColumn(i, totalColumns) * tileWidth
+    local y = tileMath.tileIndexToRow(i, totalColumns) * tileHeight -- that is not a typo: we need the number of columns to determine tile row
+    local quad = love.graphics.newQuad(x, y, tileWidth, tileHeight, imageWidth, imageHeight)
+    table.insert(tilesetRenderData.quads, quad);
+  end
+
+  tilesetRenderCache[tilesetId] = tilesetRenderData
+end
+
+-- Sometimes, tilesets will have embedded animations. (Like water tiles.)
+-- This function is used to identify the embedded animations so they may be
+-- substituted in for static tiles. The tileset must already be loaded into
+-- memory before calling this function.
+-- 'substituteTileIndex' is the index of the tile within the tileset to replace
+-- 'startTileIndex' is the index of the tile that starts the animation
+-- 'endTileIndex' is the index of the tile that ends the animation
+function lib.defineTileAnimation(tilesetId, substituteTileIndex, startTileIndex, endTileIndex)
+
+  local tilesetRenderData = tilesetRenderCache[tilesetId]
+
+  if tilesetRenderData then
+    local imageWidth = tilesetRenderData.image:getWidth()
+    local imageHeight = tilesetRenderData.image:getHeight()
+    local grid = game.anim8.newGrid(tilesetRenderData.tileWidth, tilesetRenderData.tileHeight, imageWidth, imageHeight)
+    local tileAnimation = game.anim8.newAnimation(grid(startTileIndex .. '-' .. endTileIndex, 1), 0.33) -- TODO: this code only works for tilesets with only 1 row
+    tilesetRenderData.animations[substituteTileIndex] = tileAnimation
+  end
+
+end
+
+-- Loads map data into memory.
 -- 'data' is expected to be the contents of a Tiled map
 -- exported into lua format. (ie. 'require' was called on
 -- the exported lua file and the resulting table was passed)
---
 -- 'id' is the desired identifier for the map.
-function lib.cacheMap(data, id)
+function lib.loadMap(id, data)
 
   local map = {}
   map.id = id
@@ -38,20 +95,19 @@ function lib.cacheMap(data, id)
   map.tileset = {}
   map.layers = {}
 
-  -- We only capture information required to
-  -- calculate quads on the tileset image.
-  -- The order of the tilesets matters.
+  -- If a map uses more than one tileset, the tile indexes can have offsets (to differentiate
+  -- different tilesets). We need to capture that offset here so that the draw routine can
+  -- correctly determine the tileset to use later on.
   for _,ts in pairs(data.tilesets) do
 
     local tileset = {}
-    tileset.imagePath = ts.image
+    tileset.id = ts.name
+    -- tileset.imagePath = ts.image
     tileset.firstTileIndex = ts.firstgid
-    table.insert(map.tileset, tileset)
+    -- tileset.tileColumns = ts.imagewidth/ts.tilewidth -- TODO: assert that columns and rows are integers
+    -- tileset.tileRows = ts.imageheight/ts.tileheight
 
-    if not lib._isTilesetImageCached(tileset.imagePath) then
-      -- This also gets quads calculated. Cache results are placed in tilesetRenderCache.
-      lib._cacheTilesetImage(tileset.imagePath, ts.imagewidth, ts.imageheight, map.tileWidth, map.tileHeight)
-    end
+    table.insert(map.tileset, tileset)
   end
 
   -- We only capture information required to
@@ -74,71 +130,60 @@ function lib.cacheMap(data, id)
 end
 
 
--- Here imagePath is relative to the map file the tileset is used in.
--- This function loads the specified tileset image into memory then
--- calculates the quads for each tile in the tileset.
-function lib._cacheTilesetImage(imagePath, imageWidth, imageHeight, tileWidth, tileHeight)
-
-  local tilesetRenderData = {}
-  tilesetRenderData.image = love.graphics.newImage(lib.mapsFolder .. imagePath)
-  tilesetRenderData.quads = {} -- These are partitions of the tileset that correspond to a single tile
-
-  local totalColumns = imageWidth/tileWidth
-  local totalRows = imageHeight/tileHeight
-  local totalTiles = totalColumns * totalRows
-
-  -- Quads are pre-calculated to line up with tileset indexes for the tileset
-  -- (Given a 3x3 tileset, index 1 is always the top-left most tile and index 9 is the
-  -- bottom-right most tile)
-  for i = 1, totalTiles do
-    local x = tileMath.tileIndexToColumn(i, totalColumns) * tileWidth
-    local y = tileMath.tileIndexToRow(i, totalColumns) * tileHeight -- that is not a typo: we need the number of columns to determine tile row
-    local quad = love.graphics.newQuad(x, y, tileWidth, tileHeight, imageWidth, imageHeight)
-    table.insert(tilesetRenderData.quads, quad);
-  end
-
-  tilesetRenderCache[imagePath] = tilesetRenderData
-end
-
-function lib._isTilesetImageCached(imagePath)
-  if tilesetRenderCache[imagePath] then return true
-  else return false end
-end
-
--- The tile index is expected to be 1-indexed due to Tiled
--- (ie. the value is expected to be 1 or greater)
--- Tiled uses the value 0 to denote no tile at that position
-function lib._drawTile(imagePath, tileIndex, x, y)
-
-  local tilesetRenderData = tilesetRenderCache[imagePath]
-  -- Does the desired tileset exist?
-  -- Is the desired tileIndex within the dimensions of the tileset?
-  if tilesetRenderData and tileIndex >= 1 and tileIndex <= #tilesetRenderData.quads then
-    love.graphics.draw(tilesetRenderData.image, tilesetRenderData.quads[tileIndex], math.floor(x), math.floor(y))
-  end
-end
-
-
 -- If there are multiple tilesets in use on a single map
 -- then some of the tileset indexes used will have an offset.
--- This function returns the tileset image path to use and
+-- This function returns the tileset id to use and
 -- the true tileset index.
 function lib._findTileset(map, tilesetIndex)
   for i = #map.tileset, 1, -1 do
     if tilesetIndex >= map.tileset[i].firstTileIndex then
-      return map.tileset[i].imagePath, (tilesetIndex - map.tileset[i].firstTileIndex + 1)
+      return map.tileset[i].id, (tilesetIndex - map.tileset[i].firstTileIndex + 1)
     end
   end
 
   return nil, 0
 end
 
-function lib.drawMap(id)
+-- The tile index is expected to be 1-indexed due to Tiled
+-- (ie. the value is expected to be 1 or greater)
+-- Tiled uses the value 0 to denote no tile at that position
+function lib._drawTile(tilesetId, tileIndex, x, y)
 
-  love.graphics.setColor(255,255,255,255)
+  local tilesetRenderData = tilesetRenderCache[tilesetId]
+  -- Does the desired tileset exist?
+  -- Is the desired tileIndex within the dimensions of the tileset?
+  if tilesetRenderData and tileIndex >= 1 and tileIndex <= #tilesetRenderData.quads then
 
-  if maps[id] then
-    local map = maps[id]
+    if tilesetRenderData.animations[tileIndex] then -- Is there a tile animation to substitute?
+      tilesetRenderData.animations[tileIndex]:draw(tilesetRenderData.image, math.floor(x), math.floor(y))
+    else
+      love.graphics.draw(tilesetRenderData.image, tilesetRenderData.quads[tileIndex], math.floor(x), math.floor(y))
+    end
+  end
+end
+
+function lib.update(dt)
+  if currentMap then
+    for i = 1, #currentMap.tileset do
+      local tilesetRenderData = tilesetRenderCache[currentMap.tileset[i].id]
+      for _, animation in pairs(tilesetRenderData.animations) do
+        animation:update(dt)
+      end
+    end
+  end
+end
+
+function lib.draw()
+
+  if currentMap then
+    love.graphics.setCanvas(canvas)
+    love.graphics.setColor(255,255,255,255)
+    love.graphics.clear()
+
+    love.graphics.push()
+    love.graphics.origin()
+
+    local map = currentMap
 
     for i = 1, #map.layers do
       local layer = map.layers[i]
@@ -150,16 +195,22 @@ function lib.drawMap(id)
           local tilesetIndex = layer.data[j]
 
           if tilesetIndex ~= 0 then
-            local imagePath, imageTilesetIndex = lib._findTileset(map, tilesetIndex)
-            -- TODO: Check if animated tile?
-            lib._drawTile(imagePath, imageTilesetIndex, drawX, drawY)
+            local tilesetId, imageTilesetIndex = lib._findTileset(map, tilesetIndex)
+            lib._drawTile(tilesetId, imageTilesetIndex, drawX, drawY)
           end
 
         end -- for map tiles
       end -- if drawable
     end -- for layers
+
+    love.graphics.pop()
+    love.graphics.setCanvas()
+    love.graphics.draw(canvas)
+
   end -- if map exists
 
 end
+
+
 
 return lib
