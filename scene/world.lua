@@ -19,17 +19,16 @@ world.entities.all = {}
 world.entities.current = {}
 
 function scene.initialize(manager)
-    world.maps.loadTileset('overworld-tileset', 'maps/tilesets/overworld-tileset.png', 32, 32)
-    world.maps.loadTileset('overworld-mountains', 'maps/tilesets/overworld-mountains.png', 32, 32)
-    world.maps.loadTileset('overworld-water', 'maps/tilesets/overworld-water.png', 32, 32)
+    world.maps.loadTileset('overworld-tileset', 'maps/tilesets/overworld-tileset.png', TILE_WIDTH, TILE_HEIGHT)
+    world.maps.loadTileset('overworld-mountains', 'maps/tilesets/overworld-mountains.png', TILE_WIDTH, TILE_HEIGHT)
+    world.maps.loadTileset('overworld-water', 'maps/tilesets/overworld-water.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.defineTileAnimation('overworld-water', 1, 1, 15)
     world.maps.loadMap('prototype', require 'maps.prototype')
     world.maps.setCurrentMap('prototype')
 end
 
 function scene.load()
-    world.player.x = 0
-    world.player.y = 0
+    world.player.setTile(0, 0)
     world.camera.follow(world.player)
     love.graphics.setDefaultFilter('nearest', 'nearest')
 end
@@ -52,7 +51,6 @@ function scene.draw()
   love.graphics.push()
   love.graphics.translate(world.camera.x, world.camera.y)
   love.graphics.scale(world.camera.scale)
-  love.graphics.rotate(0.2)
   world.maps.draw()
   world.player.draw()
   love.graphics.pop()
@@ -61,6 +59,9 @@ end
 
 function scene.keypressed(key,unicode)
 	-- called when the scene needs to handle a keypressed event
+
+  world.player.keypressed(key,unicode)
+
   if key == "1" then
     world.camera.zoom(1)
   elseif key == "2" then

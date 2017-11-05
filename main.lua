@@ -3,6 +3,10 @@
 
 function love.load()
 
+  -- Global constants
+  TILE_WIDTH = 32
+  TILE_HEIGHT = 32
+
   -- My personal lua library for love2d development
   game         = require 'libtsl.scene-manager'
   game.timer   = require 'libtsl.timer'
