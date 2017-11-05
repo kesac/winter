@@ -5,8 +5,7 @@ local player = {}
 player.x = 0
 player.y = 0
 player.canMove = true
-player.isMoving = false -- Used receive one directional button action at a time
-player.tileMoveTime = 0.2 -- Moving from tile to the next
+player.tileMoveTime = 0.2 -- Time it takes to move from one tile to the next
 player.direction = 'down'
 player.flux = nil
 
@@ -87,15 +86,15 @@ function player.keypressed(key, scancode, isrepeat)
     if not player.isMoving() then
 
       -- From stationary to initial movement to next tile
-    		if key == 'left' or key == 'a'  then
-          player.moveLeft()
-    		elseif key == 'right' or key =='d' then
-          player.moveRight()
-    		elseif key == 'up' or key == 'w' then
-          player.moveUp()
-    		elseif key == 'down' or key == 's' then
-          player.moveDown()
-    		end
+      if key == 'left' or key == 'a'  then
+        player.moveLeft()
+      elseif key == 'right' or key =='d' then
+        player.moveRight()
+      elseif key == 'up' or key == 'w' then
+        player.moveUp()
+      elseif key == 'down' or key == 's' then
+        player.moveDown()
+      end
     -- Allow player to queue up another move for better control
     else
       if key == 'left' or key == 'a' then
@@ -107,7 +106,7 @@ function player.keypressed(key, scancode, isrepeat)
       elseif key == 'down' or key == 's' then
         player.nextMove = player.moveDown
       end
-  	end
+    end
 
   end -- if player can move
 end

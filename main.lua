@@ -20,7 +20,7 @@ function love.load()
 
   -- Setup
   game.font.setDefaultFont('fonts/PressStart2P/PressStart2P.ttf')
-	game.textbox.init(game.font.get(16))
+  game.textbox.init(game.font.get(16))
 
   game.addScene(require 'scene.test-text-1', 'test-text-1')
   game.addScene(require 'scene.test-text-2', 'test-text-2')
