@@ -12,7 +12,7 @@
   * Rendering map data on screen
 --]]
 
-local lib        = {}
+local lib        = { alpha = 255 }
 local canvas     = love.graphics.newCanvas(800, 600)
 local maps       = {}
 local currentMap = nil
@@ -177,7 +177,7 @@ function lib.draw()
 
   if currentMap then
     love.graphics.setCanvas(canvas)
-    love.graphics.setColor(255,255,255,255)
+    love.graphics.setColor(255,255,255, lib.alpha)
     love.graphics.clear()
 
     love.graphics.push()

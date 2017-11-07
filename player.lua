@@ -5,7 +5,7 @@ local player = {}
 player.x = 0
 player.y = 0
 player.canMove = true
-player.tileMoveTime = 0.2 -- Time it takes to move from one tile to the next
+player.tileMoveTime = 0.22 -- Time it takes to move from one tile to the next
 player.direction = 'down'
 player.flux = nil
 
