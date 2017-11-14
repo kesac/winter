@@ -5,6 +5,7 @@ scene._manager = nil
 scene._maps = require 'libtsl.map-manager' -- this only works if title-menu is initialized after the world scene
 scene._titlefont = game.font.get(40)
 scene._menufont = game.font.get(20)
+scene._music = 'bgm-title'
 
 local background = {}
 background.x = 0
@@ -55,7 +56,7 @@ function scene.load()
     scene.goToNextPoint()
     snow.fillscreen()
 
-    game.audio.loop('snowfall')
+    game.audio.loop(scene._music)
 end
 
 function scene.unload()
@@ -72,7 +73,7 @@ function scene.unload()
 
   snow.clear()
 
-  game.audio.fadestop('snowfall')
+  game.audio.fadestop(scene._music)
 end
 
 function scene.update(dt)

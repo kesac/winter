@@ -25,7 +25,7 @@ function love.load()
 
   -- Setup
 
-  game.audio.add('music/Snowfall-Loop.ogg','stream',"snowfall",1)
+  game.audio.add('music/FantasyOrchestralTheme_lq.ogg','stream',"bgm-title",1)
 
   game.font.setDefaultFont('fonts/PressStart2P/PressStart2P.ttf')
   game.textbox.init(game.font.get(16))
@@ -37,7 +37,7 @@ function love.load()
 
   -- game.setCurrentScene('test-text-1')
   game.setCurrentScene('world')
-  -- game.setCurrentScene('title-menu')
+  game.setCurrentScene('title-menu')
 
 end
 

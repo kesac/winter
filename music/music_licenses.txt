@@ -1,4 +1,5 @@
-[Snowfall-Loop.ogg]
-Source:   https://opengameart.org/content/snowfall
-License:  https://creativecommons.org/licenses/by/3.0/
-Composer: By Joseph Gilbert (Kistol)
+[FantasyOrchestralTheme]
+Source:   https://opengameart.org/content/fantasy-orchestral-theme
+License:  http://creativecommons.org/publicdomain/zero/1.0/
+Composer: By Joth (https://opengameart.org/users/joth)
+Modifications: Converted to .ogg and created reduced size/quality version
