@@ -92,8 +92,9 @@ function lib.loadMap(id, data)
                                    -- second is used by Tiled)
   map.tileHeight = data.tileheight
 
-  map.tileset = {}
-  map.layers = {}
+  map.tileset = {}   -- list of tilesets used in map (but not the tileset data)
+  map.layers = {}    -- list of tile layers
+  map.collision = {} -- keys are tile x,y coordinates as single strings with no spaces delimited by a single comma
 
   -- If a map uses more than one tileset, the tile indexes can have offsets (to differentiate
   -- different tilesets). We need to capture that offset here so that the draw routine can
@@ -116,12 +117,24 @@ function lib.loadMap(id, data)
   for _,l in pairs(data.layers) do
 
     local layer = {}
+    layer.visible = true
     layer.name = l.name             -- so layer 'player' can be identified
     layer.type = l.type             -- only type 'tilelayer' can get drawn
     layer.properties = l.properties -- to parse triggers and events
     layer.data = l.data             -- this is expected to be a list of tile
                                     --   indexes that can be used to select
                                     --   the exact quad on the tileset image
+    if layer.name == 'Collision' then
+      layer.visible = DEBUG_MODE
+      for mapTileIndex, tileValue in pairs(layer.data) do
+        if tileValue ~= 0 then
+          local tileX = tileMath.tileIndexToColumn(mapTileIndex, map.tileColumns)
+          local tileY = tileMath.tileIndexToRow(mapTileIndex, map.tileColumns)
+          map.collision[tileX .. ',' .. tileY] = true
+        end
+      end
+    end
+
     table.insert(map.layers, layer)
   end
 
@@ -129,6 +142,27 @@ function lib.loadMap(id, data)
 
 end
 
+-- tile coordinates are 0-indexed! (The top left tile of any map is 0,0)
+function lib.isCollidable(tileX, tileY)
+
+  if tileX < 0 or tileY < 0 then
+    if DEBUG_MODE then print('isCollidable: tileX ('.. tileX ..') < 0 or tileY ('.. tileY ..') < 0') end
+    return true
+  end
+
+  if currentMap then
+    if tileX >= currentMap.tileColumns or tileY >= currentMap.tileRows then
+      if DEBUG_MODE then print('isCollidable: tileX ('.. tileX ..') >= currentMap.tileColumns ('.. currentMap.tileColumns ..') or tileY ('.. tileY ..') >= currentMap.tileRows ('.. currentMap.tileRows ..')') end
+      return true
+    elseif currentMap.collision[tileX .. ',' .. tileY] then
+      if DEBUG_MODE then print('isCollidable currentMap.collision[tileX ('.. tileX ..').. ',' .. tileY ('.. tileY ..')]') end
+      return true
+    end
+  end
+
+  return false
+
+end
 
 -- If there are multiple tilesets in use on a single map
 -- then some of the tileset indexes used will have an offset.
@@ -188,7 +222,7 @@ function lib.draw()
     for i = 1, #map.layers do
       local layer = map.layers[i]
 
-      if layer.type == 'tilelayer' then
+      if layer.visible and layer.type == 'tilelayer' then
         for j = 1, #layer.data do
           local drawX = map.tileWidth  * tileMath.tileIndexToColumn(j, map.tileColumns)
           local drawY = map.tileHeight * tileMath.tileIndexToRow(j, map.tileColumns)

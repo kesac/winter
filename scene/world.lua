@@ -14,11 +14,19 @@ local world = {}
 world.camera = require 'libtsl.camera'
 world.maps = require 'libtsl.map-manager'
 world.player = require 'player'
+
+--[[]]
+world.player.canMove = function(tileX, tileY) -- overrides existing function
+  return not world.maps.isCollidable(tileX, tileY)
+end
+--]]
+
 world.entities = {}
 world.entities.all = {}
 world.entities.current = {}
 
 function scene.initialize(manager)
+    world.maps.loadTileset('meta-tileset', 'maps/tilesets/meta-tileset.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.loadTileset('overworld-tileset', 'maps/tilesets/overworld-tileset.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.loadTileset('overworld-mountains', 'maps/tilesets/overworld-mountains.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.loadTileset('overworld-water', 'maps/tilesets/overworld-water.png', TILE_WIDTH, TILE_HEIGHT)
@@ -59,7 +67,7 @@ end
 
 function scene.keypressed(key,unicode)
 	-- called when the scene needs to handle a keypressed event
-
+  if DEBUG_MODE then print('scene.keypressed: player is currently at (x,y): ' .. world.player.x .. ',' .. world.player.y) end
   world.player.keypressed(key,unicode)
 
   if key == "1" then

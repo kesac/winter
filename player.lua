@@ -9,12 +9,13 @@ player.tileMoveTime = 0.22 -- Time it takes to move from one tile to the next
 player.direction = 'down'
 player.flux = nil
 
-function player.getTileX()
+
+function player.getTileX() -- tile coordinates are 0-indexed!
   return math.floor(player.x / TILE_WIDTH)
 end
 
-function player.getTileY()
-  return math.floor(player.Y / TILE_WIDTH)
+function player.getTileY() -- tile coordinates are 0-indexed!
+  return math.floor(player.y / TILE_WIDTH)
 end
 
 function player.setTile(tileX, tileY)
@@ -46,39 +47,51 @@ function player._movementComplete()
 
 end
 
+function player._canMove(tileX, tileY)
+  if player.canMove then  -- canMove (without the underscore) is meant to be defined outside of this table (in the world scene)
+    return player.canMove(tileX, tileY)
+  else
+    return true -- if it's not, we permit any movement
+  end
+end
+
 function player.moveLeft()
-  player.flux = game.flux.to(player, player.tileMoveTime, {x = player.x - TILE_WIDTH}):ease("linear"):oncomplete(player._movementComplete)
   player.direction = 'left'
+  if player._canMove(player.getTileX() - 1, player.getTileY()) then
+    player.flux = game.flux.to(player, player.tileMoveTime, {x = player.x - TILE_WIDTH}):ease("linear"):oncomplete(player._movementComplete)
+  end
 end
 
 function player.moveRight()
-  player.flux = game.flux.to(player, player.tileMoveTime, {x = player.x + TILE_WIDTH}):ease("linear"):oncomplete(player._movementComplete)
   player.direction = 'right'
+  if player._canMove(player.getTileX() + 1, player.getTileY()) then
+    player.flux = game.flux.to(player, player.tileMoveTime, {x = player.x + TILE_WIDTH}):ease("linear"):oncomplete(player._movementComplete)
+  end
 end
 
 function player.moveUp()
-  player.flux = game.flux.to(player, player.tileMoveTime, {y = player.y - TILE_WIDTH}):ease("linear"):oncomplete(player._movementComplete)
   player.direction = 'up'
+  if player._canMove(player.getTileX(), player.getTileY() - 1) then
+    player.flux = game.flux.to(player, player.tileMoveTime, {y = player.y - TILE_WIDTH}):ease("linear"):oncomplete(player._movementComplete)
+  end
 end
 
 function player.moveDown()
-  player.flux = game.flux.to(player, player.tileMoveTime, {y = player.y + TILE_WIDTH}):ease("linear"):oncomplete(player._movementComplete)
   player.direction = 'down'
+  if player._canMove(player.getTileX(), player.getTileY() + 1) then
+    player.flux = game.flux.to(player, player.tileMoveTime, {y = player.y + TILE_WIDTH}):ease("linear"):oncomplete(player._movementComplete)
+  end
 end
-
 
 function player.update(dt)
-
-
-
+  -- animate player sprite
 end
 
--- This will eventually handle rendering the player sprite
 function player.draw()
+  -- This will eventually handle rendering the player sprite
   love.graphics.setColor(100,255,255)
   love.graphics.circle('fill', math.floor(player.x), math.floor(player.y), 10)
 end
-
 
 function player.keypressed(key, scancode, isrepeat)
 
