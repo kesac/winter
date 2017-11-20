@@ -6,6 +6,7 @@ function love.load()
   -- Global constants
   TILE_WIDTH = 32
   TILE_HEIGHT = 32
+  DEBUG_MODE = true
 
   -- My personal lua library for love2d development
   game         = require 'libtsl.scene-manager'
@@ -26,6 +27,7 @@ function love.load()
   -- Setup
 
   game.audio.add('music/FantasyOrchestralTheme_lq.ogg','stream',"bgm-title",1)
+  game.audio.enabled = not DEBUG_MODE -- TODO: Re-enable before deploying
 
   game.font.setDefaultFont('fonts/PressStart2P/PressStart2P.ttf')
   game.textbox.init(game.font.get(16))
