@@ -4,9 +4,9 @@
 function love.load()
 
   -- Global constants
-  TILE_WIDTH = 32
+  TILE_WIDTH  = 32
   TILE_HEIGHT = 32
-  DEBUG_MODE = true
+  DEBUG_MODE  = false
 
   -- My personal lua library for love2d development
   game         = require 'libtsl.scene-manager'
@@ -54,6 +54,13 @@ end
 function love.draw()
   game.draw()
   game.textbox.draw()
+
+  if DEBUG_MODE then
+    love.graphics.setFont(game.font.get(16))
+    love.graphics.setColor(255,0,0,255)
+    love.graphics.print("FPS: ".. love.timer.getFPS(), 10, 10)
+  end
+
 end
 
 function love.keypressed(key, scancode, isrepeat)
