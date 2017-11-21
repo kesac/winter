@@ -27,12 +27,18 @@ world.entities.current = {}
 
 function scene.initialize(manager)
     world.maps.loadTileset('meta-tileset', 'maps/tilesets/meta-tileset.png', TILE_WIDTH, TILE_HEIGHT)
+    world.maps.loadTileset('gb-1-main', 'maps/tilesets/gb-1-main.png', TILE_WIDTH, TILE_HEIGHT)
+    world.maps.loadTileset('gb-3-flora', 'maps/tilesets/gb-3-flora.png', TILE_WIDTH, TILE_HEIGHT)
+    world.maps.loadTileset('gb-5-waterfall', 'maps/tilesets/gb-5-waterfall.png', TILE_WIDTH, TILE_HEIGHT)
+    world.maps.loadTileset('gb-7-outdoor', 'maps/tilesets/gb-7-outdoor.png', TILE_WIDTH, TILE_HEIGHT)
+    world.maps.loadTileset('gb-8-cave', 'maps/tilesets/gb-8-cave.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.loadTileset('overworld-tileset', 'maps/tilesets/overworld-tileset.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.loadTileset('overworld-mountains', 'maps/tilesets/overworld-mountains.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.loadTileset('overworld-water', 'maps/tilesets/overworld-water.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.defineTileAnimation('overworld-water', 1, 1, 15)
     world.maps.loadMap('prototype', require 'maps.prototype')
-    world.maps.setCurrentMap('prototype')
+    world.maps.loadMap('prototype2', require 'maps.prototype2')
+    world.maps.setCurrentMap('prototype2')
 end
 
 function scene.load()
