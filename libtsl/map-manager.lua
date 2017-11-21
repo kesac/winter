@@ -12,16 +12,18 @@
   * Rendering map data on screen
 --]]
 
-local lib        = { alpha = 255 }
-local canvas     = love.graphics.newCanvas(800, 600)
-local maps       = {}
-local currentMap = nil
+local lib         = { alpha = 255 }
+local canvas      = love.graphics.newCanvas(800, 600)
+-- local canvasDrawn = false -- Future optimization
+local maps        = {}
+local currentMap  = nil
 local tilesetRenderCache = {}
-local tileMath   = require 'libtsl.tile-math'
+local tileMath    = require 'libtsl.tile-math'
 
 function lib.setCurrentMap(id)
   if maps[id] then
     canvas = love.graphics.newCanvas(maps[id].tileColumns * TILE_WIDTH, maps[id].tileColumns * TILE_WIDTH)
+    canvasDrawn = false
     currentMap = maps[id]
   end
 end
@@ -215,37 +217,43 @@ function lib.update(dt)
   end
 end
 
+function lib._drawCanvas()
+  love.graphics.setCanvas(canvas)
+  love.graphics.setColor(255,255,255, lib.alpha)
+  love.graphics.clear()
+
+  love.graphics.push()
+  love.graphics.origin()
+
+  local map = currentMap
+
+  for i = 1, #map.layers do
+    local layer = map.layers[i]
+
+    if layer.visible and layer.type == 'tilelayer' then
+      for j = 1, #layer.data do
+        local tileX = tileMath.tileIndexToColumn(j, map.tileColumns)
+        local tileY = tileMath.tileIndexToRow(j, map.tileColumns)
+        local drawX = map.tileWidth  * tileX
+        local drawY = map.tileHeight * tileY
+        local tilesetIndex = layer.data[j]
+
+        if tilesetIndex ~= 0 then
+          local tilesetId, imageTilesetIndex = lib._findTileset(map, tilesetIndex)
+          lib._drawTile(tilesetId, imageTilesetIndex, drawX, drawY)
+        end
+
+      end -- for map tiles
+    end -- if drawable
+  end -- for layers
+end
+
+
 function lib.draw()
 
   if currentMap then
-    love.graphics.setCanvas(canvas)
-    love.graphics.setColor(255,255,255, lib.alpha)
-    love.graphics.clear()
 
-    love.graphics.push()
-    love.graphics.origin()
-
-    local map = currentMap
-
-    for i = 1, #map.layers do
-      local layer = map.layers[i]
-
-      if layer.visible and layer.type == 'tilelayer' then
-        for j = 1, #layer.data do
-          local tileX = tileMath.tileIndexToColumn(j, map.tileColumns)
-          local tileY = tileMath.tileIndexToRow(j, map.tileColumns)
-          local drawX = map.tileWidth  * tileX
-          local drawY = map.tileHeight * tileY
-          local tilesetIndex = layer.data[j]
-
-          if tilesetIndex ~= 0 then
-            local tilesetId, imageTilesetIndex = lib._findTileset(map, tilesetIndex)
-            lib._drawTile(tilesetId, imageTilesetIndex, drawX, drawY)
-          end
-
-        end -- for map tiles
-      end -- if drawable
-    end -- for layers
+    lib._drawCanvas()
 
     love.graphics.pop()
     love.graphics.setCanvas()
