@@ -7,13 +7,20 @@ scene._titlefont = game.font.get(40)
 scene._menufont = game.font.get(20)
 scene._music = 'bgm-title'
 
+local logo = love.graphics.newImage('images/game-logo-1.png')
+scene.logoAlpha = 0
+local logoBlackWhite = love.graphics.newImage('images/game-logo-1-bw.png')
+scene.logoBlackWhiteAlpha = 255
+
+scene.transitionLength = 5
+
 local background = {}
 background.x = 0
 background.y = 0
 background.targets = {
   {x = 0,   y = 0},
-  {x = 25,  y = 150},
-  {x = 75, y = 25}
+  {x = 50,  y = 300},
+  {x = 150, y = 50}
 }
 background.currentTarget = 1
 background.fluxMovement = nil
@@ -50,8 +57,10 @@ function scene.load()
     -- Background fades in
     scene._maps.alpha = 0
     --scene._maps.alpha = 255
-    background.fluxAlpha = game.flux.to(scene._maps, 2.5, {alpha = 255}):ease("linear")
+    background.fluxAlpha = game.flux.to(scene._maps, scene.transitionLength, {alpha = 255}):ease("linear")
 
+    game.flux.to(scene, scene.transitionLength, {logoAlpha = 255}):ease("quadinout")
+    game.flux.to(scene, scene.transitionLength, {logoBlackWhiteAlpha = 0}):ease("quadinout")
 
     scene.goToNextPoint()
     snow.fillscreen()
@@ -85,9 +94,9 @@ function scene.draw()
 
 	-- moving background
   love.graphics.push()
-  love.graphics.scale(2)
+  love.graphics.scale(1.25)
   love.graphics.translate(-background.x, -background.y)
-  scene._maps.draw()
+  -- scene._maps.draw()
   love.graphics.pop()
 
   -- falling snow
@@ -98,9 +107,14 @@ function scene.draw()
   -- love.graphics.setColor(0,0,0,150)
   -- love.graphics.rectangle('fill', 0, love.graphics.getHeight()/2 - 50 - 20, love.graphics.getWidth(), 85)
 
-  love.graphics.setColor(255,255,255,255)
-  love.graphics.setFont(scene._titlefont)
-  love.graphics.print(game.text.gamename, love.graphics.getWidth()/2 - scene._titlefont:getWidth(game.text.gamename)/2 , love.graphics.getHeight()/2 - scene._titlefont:getHeight(game.text.gamename)/2 - 20)
+  -- love.graphics.setColor(255,255,255,255)
+  --love.graphics.setFont(scene._titlefont)
+  --love.graphics.print(game.text.gamename, love.graphics.getWidth()/2 - scene._titlefont:getWidth(game.text.gamename)/2 , love.graphics.getHeight()/2 - scene._titlefont:getHeight(game.text.gamename)/2 - 20)
+
+  love.graphics.setColor(255,255,255,scene.logoAlpha)
+  love.graphics.draw(logo,100,100,0,1.2,1.2)
+  love.graphics.setColor(255,255,255,scene.logoBlackWhiteAlpha)
+  love.graphics.draw(logoBlackWhite,100,100,0,1.2,1.2)
 
   -- menu
   -- love.graphics.setColor(0,0,0,150)
