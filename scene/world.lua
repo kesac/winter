@@ -65,8 +65,9 @@ function scene.draw()
   love.graphics.push()
   love.graphics.translate(world.camera.x, world.camera.y)
   love.graphics.scale(world.camera.scale)
-  world.maps.draw()
+  world.maps.drawBelow()
   world.player.draw()
+  world.maps.drawAbove()
   love.graphics.pop()
 
 end

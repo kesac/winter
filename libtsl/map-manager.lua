@@ -13,7 +13,9 @@
 --]]
 
 local lib         = { alpha = 255 }
-local canvas      = love.graphics.newCanvas(800, 600)
+--local canvas      = love.graphics.newCanvas(800, 600)
+local canvasBelow = love.graphics.newCanvas(800, 600)
+local canvasAbove = love.graphics.newCanvas(800, 600)
 -- local canvasDrawn = false -- Future optimization
 local maps        = {}
 local currentMap  = nil
@@ -22,9 +24,10 @@ local tileMath    = require 'libtsl.tile-math'
 
 function lib.setCurrentMap(id)
   if maps[id] then
-    canvas = love.graphics.newCanvas(maps[id].tileColumns * TILE_WIDTH, maps[id].tileColumns * TILE_WIDTH)
-    canvasDrawn = false
     currentMap = maps[id]
+    canvasBelow = love.graphics.newCanvas(maps[id].tileColumns * TILE_WIDTH, maps[id].tileColumns * TILE_WIDTH)
+    canvasAbove = love.graphics.newCanvas(maps[id].tileColumns * TILE_WIDTH, maps[id].tileColumns * TILE_WIDTH)
+    -- canvasDrawn = false
   end
 end
 
@@ -123,6 +126,8 @@ function lib.loadMap(id, data)
 
   map.tileset = {}   -- list of tilesets used in map (but not the tileset data)
   map.layers = {}    -- list of tile layers
+  map.layersBelow = {} -- list of tile layers to be rendered below player
+  map.layersAbove = {} -- list of tile layers to be rendered above player
   map.collision = {} -- keys are tile x,y coordinates as single strings with no spaces delimited by a single comma
 
   -- If a map uses more than one tileset, the tile indexes can have offsets (to differentiate
@@ -161,6 +166,8 @@ function lib.loadMap(id, data)
     table.insert(map.tileset, tileset)
   end
 
+  local playerLayerEncountered = false
+
   -- We only capture information required to
   -- draw each layer of the map. The order of layers
   -- defined within the Tiled map matters!
@@ -186,6 +193,17 @@ function lib.loadMap(id, data)
     end
 
     table.insert(map.layers, layer)
+
+    if playerLayerEncountered then
+      table.insert(map.layersAbove, layer)
+    else
+      table.insert(map.layersBelow, layer)
+    end
+
+    if layer.name == 'Player' then
+      playerLayerEncountered = true
+    end
+
   end
 
   maps[id] = map
@@ -268,7 +286,8 @@ function lib.update(dt)
   end
 end
 
-function lib._drawCanvas()
+
+function lib._draw(canvas, layers)
   love.graphics.setCanvas(canvas)
   love.graphics.setColor(255,255,255, lib.alpha)
   love.graphics.clear()
@@ -278,8 +297,8 @@ function lib._drawCanvas()
 
   local map = currentMap
 
-  for i = 1, #map.layers do
-    local layer = map.layers[i]
+  for i = 1, #layers do
+    local layer = layers[i]
 
     if layer.visible and layer.type == 'tilelayer' then
       for j = 1, #layer.data do
@@ -297,23 +316,30 @@ function lib._drawCanvas()
       end -- for map tiles
     end -- if drawable
   end -- for layers
+
+  love.graphics.pop()
 end
 
 
-function lib.draw()
+function lib.drawBelow()
 
   if currentMap then
-
-    lib._drawCanvas()
-
-    love.graphics.pop()
+    lib._draw(canvasBelow, currentMap.layersBelow)
     love.graphics.setCanvas()
-    love.graphics.draw(canvas)
-
+    love.graphics.draw(canvasBelow)
   end -- if map exists
 
 end
 
+function lib.drawAbove()
+
+  if currentMap then
+    lib._draw(canvasAbove, currentMap.layersAbove)
+    love.graphics.setCanvas()
+    love.graphics.draw(canvasAbove)
+  end -- if map exists
+
+end
 
 
 return lib
