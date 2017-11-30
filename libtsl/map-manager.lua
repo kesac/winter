@@ -45,6 +45,9 @@ function lib.loadTileset(tilesetId, imagePath, tileWidth, tileHeight)
   local totalRows = imageHeight/tileHeight
   local totalTiles = totalColumns * totalRows
 
+  tilesetRenderData.tileColumns = totalColumns
+  tilesetRenderData.tileRows = totalRows
+
   -- Quads are pre-calculated to line up with tileset indexes for the tileset
   -- (Given a 3x3 tileset, index 1 is always the top-left most tile and index 9 is the
   -- bottom-right most tile)
@@ -79,6 +82,29 @@ function lib.defineTileAnimation(tilesetId, substituteTileIndex, startTileIndex,
 
 end
 
+-- Similar to other defineTileAnimation, but takes in an animation array from Tiled maps
+function lib.defineTileAnimation2(tilesetId, substituteTileIndex, tiledAnimationData)
+
+  local tilesetRenderData = tilesetRenderCache[tilesetId]
+
+  if tilesetRenderData then
+    local imageWidth = tilesetRenderData.image:getWidth()
+    local imageHeight = tilesetRenderData.image:getHeight()
+    local grid = game.anim8.newGrid(tilesetRenderData.tileWidth, tilesetRenderData.tileHeight, imageWidth, imageHeight)
+
+    local gridArgs = {}
+    local frameDurations = {}
+    for _,frame in pairs(tiledAnimationData) do
+      table.insert(gridArgs, tileMath.tileIndexToColumn(frame.tileid, tilesetRenderData.tileColumns) + 1)
+      table.insert(gridArgs, tileMath.tileIndexToRow(frame.tileid, tilesetRenderData.tileColumns) + 1)
+      table.insert(frameDurations, frame.duration/1000)
+    end
+
+    local tileAnimation = game.anim8.newAnimation(grid(unpack(gridArgs)), frameDurations)
+    tilesetRenderData.animations[substituteTileIndex] = tileAnimation
+  end
+end
+
 -- Loads map data into memory.
 -- 'data' is expected to be the contents of a Tiled map
 -- exported into lua format. (ie. 'require' was called on
@@ -106,10 +132,31 @@ function lib.loadMap(id, data)
 
     local tileset = {}
     tileset.id = ts.name
+
+    if not tilesetRenderCache[tileset.id] then
+      error('Undefined tileset referenced: "'.. tileset.id ..'". Tilesets must be loaded before maps are loaded.')
+    end
+
     -- tileset.imagePath = ts.image
     tileset.firstTileIndex = ts.firstgid
     -- tileset.tileColumns = ts.imagewidth/ts.tilewidth -- TODO: assert that columns and rows are integers
     -- tileset.tileRows = ts.imageheight/ts.tileheight
+
+    for _,animatedTile in pairs(ts.tiles) do
+
+      -- We add 1 to the indexes here to make them 1-indexed
+      -- Also, the animation tile indexes are relative to the tileset not the maps
+      -- (So there is no need to use offsets)
+      local targetIndex = animatedTile.id + 1
+      local animationData = animatedTile.animation
+
+      for _,animationFrame in pairs(animatedTile.animation) do
+        animationFrame.tileid = animationFrame.tileid + 1
+      end
+
+      lib.defineTileAnimation2(tileset.id, targetIndex, animationData)
+
+    end
 
     table.insert(map.tileset, tileset)
   end
@@ -192,16 +239,20 @@ function lib._drawTile(tilesetId, tileIndex, x, y)
   -- Is the desired tileIndex within the dimensions of the tileset?
   if tilesetRenderData and tileIndex >= 1 and tileIndex <= #tilesetRenderData.quads then
 
+
     if tilesetRenderData.animations[tileIndex] then -- Is there a tile animation to substitute?
       tilesetRenderData.animations[tileIndex]:draw(tilesetRenderData.image, math.floor(x), math.floor(y))
+
     else
       love.graphics.draw(tilesetRenderData.image, tilesetRenderData.quads[tileIndex], math.floor(x), math.floor(y))
 
       -- Turn this on if you're having tile rendering issues (writes the tileset index on top of the tile):
-      -- love.graphics.setFont(game.font.get(6))
-      -- love.graphics.setColor(255,0,0,255)
-      -- love.graphics.print(tileIndex, math.floor(x), math.floor(y))
-      -- love.graphics.setColor(255,255,255,255)
+      --[[
+      love.graphics.setFont(game.font.get(6))
+      love.graphics.setColor(255,0,0,255)
+      love.graphics.print(tileIndex, math.floor(x), math.floor(y))
+      love.graphics.setColor(255,255,255,255)
+      --]]
     end
   end
 end
