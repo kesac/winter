@@ -20,11 +20,11 @@
 	USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
----- Provides support for running asynchronous sequences of functions.
+---- Provides support for running events in a sequence or chain.
 
 local lib = {}
 
---- Runs the specified sequence of functions to one after another. 
+--- Runs the specified sequence of functions to one after another.
 --- Each function (except for the last one in the chain) must take a
 --- single callback function as an argument and run that callback function
 --- when finished its own work.
