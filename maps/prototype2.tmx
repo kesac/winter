@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" nextobjectid="5">
  <tileset firstgid="1" source="meta-tileset.tsx"/>
  <tileset firstgid="2" source="gb-1-main.tsx"/>
  <tileset firstgid="362" source="gb-7-outdoor.tsx"/>
@@ -310,4 +310,11 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="Events">
+  <object id="1" name="Warp to world map" type="OnEnter" x="3.5" y="6.16667" width="20" height="143.5">
+   <properties>
+    <property name="WarpTo" value="prototype"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

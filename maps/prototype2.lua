@@ -8,7 +8,7 @@ return {
   height = 30,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 1,
+  nextobjectid = 5,
   properties = {},
   tilesets = {
     {
@@ -652,6 +652,33 @@ return {
         0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    },
+    {
+      type = "objectgroup",
+      name = "Events",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      draworder = "topdown",
+      properties = {},
+      objects = {
+        {
+          id = 1,
+          name = "Warp to world map",
+          type = "OnEnter",
+          shape = "rectangle",
+          x = 3.5,
+          y = 6.16667,
+          width = 20,
+          height = 143.5,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["WarpTo"] = "prototype"
+          }
+        }
       }
     }
   }
