@@ -14,8 +14,8 @@
 
 local lib         = { alpha = 255 }
 --local canvas      = love.graphics.newCanvas(800, 600)
-local canvasBelow = love.graphics.newCanvas(800, 600)
-local canvasAbove = love.graphics.newCanvas(800, 600)
+local canvasBelow = love.graphics.newCanvas(GAME_CANVAS_WIDTH, GAME_CANVAS_HEIGHT)
+local canvasAbove = love.graphics.newCanvas(GAME_CANVAS_WIDTH, GAME_CANVAS_HEIGHT)
 -- local canvasDrawn = false -- Future optimization
 local maps        = {}
 local currentMap  = nil

@@ -6,6 +6,9 @@ function love.load()
   -- Global constants
   TILE_WIDTH  = 32
   TILE_HEIGHT = 32
+  GAME_CANVAS_WIDTH = 800
+  GAME_CANVAS_HEIGHT = 600
+  GAME_POINT_SIZE = 1
   DEBUG_MODE  = false
 
   -- My personal lua library for love2d development
@@ -20,6 +23,7 @@ function love.load()
   -- External libraries for love2d games
   game.flux   = require 'lib.flux'
   game.anim8  = require 'lib.anim8'
+  game.tlfres = require 'lib.tlfres'
 
   -- Languages
   game.text   = require 'text.english'
@@ -52,6 +56,11 @@ function love.update(dt)
 end
 
 function love.draw()
+
+  game.tlfres.beginRendering(GAME_CANVAS_WIDTH, GAME_CANVAS_HEIGHT)
+  --love.graphics.setPointSize(game.tlfres.getScale()*GAME_POINT_SIZE)
+
+
   game.draw()
   game.textbox.draw()
 
@@ -60,6 +69,10 @@ function love.draw()
     love.graphics.setColor(255,0,0,255)
     love.graphics.print("FPS: ".. love.timer.getFPS(), 10, 10)
   end
+
+  love.graphics.points(400, 300)
+
+  game.tlfres.endRendering()
 
 end
 

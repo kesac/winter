@@ -20,11 +20,13 @@ camera.x = 0
 camera.y = 0
 camera.scale = 1.0
 camera._targetEntity = nil
+camera.screenWidth = 800
+camera.screenHeight = 600
 
 function camera.move(targetX, targetY)
   if targetX and targetY then
     camera._targetEntity = nil
-    game.flux.to(camera, 1, {x = targetX + love.graphics.getWidth()/2, y = targetY + love.graphics.getHeight()/2}):ease("quadout")
+    game.flux.to(camera, 1, {x = targetX + camera.screenWidth/2, y = targetY + camera.screenHeight/2}):ease("quadout")
   end
 end
 
@@ -42,8 +44,8 @@ end
 
 function camera.update(dt)
   if camera._targetEntity then
-    camera.x = math.floor(-(math.floor(math.floor(camera._targetEntity.x)*camera.scale)) + love.graphics.getWidth()/2)
-    camera.y = math.floor(-(math.floor(math.floor(camera._targetEntity.y)*camera.scale)) + love.graphics.getHeight()/2)
+    camera.x = math.floor(-(math.floor(math.floor(camera._targetEntity.x)*camera.scale)) + camera.screenWidth/2)
+    camera.y = math.floor(-(math.floor(math.floor(camera._targetEntity.y)*camera.scale)) + camera.screenHeight/2)
   end
 end
 

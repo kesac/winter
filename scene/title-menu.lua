@@ -105,11 +105,11 @@ function scene.draw()
 
   -- title
   -- love.graphics.setColor(0,0,0,150)
-  -- love.graphics.rectangle('fill', 0, love.graphics.getHeight()/2 - 50 - 20, love.graphics.getWidth(), 85)
+  -- love.graphics.rectangle('fill', 0, GAME_CANVAS_HEIGHT/2 - 50 - 20, GAME_CANVAS_WIDTH, 85)
 
   -- love.graphics.setColor(255,255,255,255)
   --love.graphics.setFont(scene._titlefont)
-  --love.graphics.print(game.text.gamename, love.graphics.getWidth()/2 - scene._titlefont:getWidth(game.text.gamename)/2 , love.graphics.getHeight()/2 - scene._titlefont:getHeight(game.text.gamename)/2 - 20)
+  --love.graphics.print(game.text.gamename, GAME_CANVAS_WIDTH/2 - scene._titlefont:getWidth(game.text.gamename)/2 , GAME_CANVAS_HEIGHT/2 - scene._titlefont:getHeight(game.text.gamename)/2 - 20)
 
   love.graphics.setColor(255,255,255,scene.logoAlpha)
   love.graphics.draw(logo,100,100,0,1.2,1.2)
@@ -118,14 +118,14 @@ function scene.draw()
 
   -- menu
   -- love.graphics.setColor(0,0,0,150)
-  -- love.graphics.rectangle('fill', love.graphics.getWidth()/2 + 120, love.graphics.getHeight()/2 + 100, 200, 150)
+  -- love.graphics.rectangle('fill', GAME_CANVAS_WIDTH/2 + 120, GAME_CANVAS_HEIGHT/2 + 100, 200, 150)
 
   love.graphics.setFont(scene._menufont)
   love.graphics.setColor(255,255,255,255)
-  love.graphics.print(game.text.title.new, love.graphics.getWidth()/2 + 120 + 10, love.graphics.getHeight()/2 + 100 + 10)
-  love.graphics.print(game.text.title.load, love.graphics.getWidth()/2 + 120 + 10, love.graphics.getHeight()/2 + 100 + 10 + 35)
-  love.graphics.print(game.text.title.options, love.graphics.getWidth()/2 + 120 + 10, love.graphics.getHeight()/2 + 100 + 10 + 70)
-  love.graphics.print(game.text.title.exit, love.graphics.getWidth()/2 + 120 + 10, love.graphics.getHeight()/2 + 100 + 10 + 110)
+  love.graphics.print(game.text.title.new, GAME_CANVAS_WIDTH/2 + 120 + 10, GAME_CANVAS_HEIGHT/2 + 100 + 10)
+  love.graphics.print(game.text.title.load, GAME_CANVAS_WIDTH/2 + 120 + 10, GAME_CANVAS_HEIGHT/2 + 100 + 10 + 35)
+  love.graphics.print(game.text.title.options, GAME_CANVAS_WIDTH/2 + 120 + 10, GAME_CANVAS_HEIGHT/2 + 100 + 10 + 70)
+  love.graphics.print(game.text.title.exit, GAME_CANVAS_WIDTH/2 + 120 + 10, GAME_CANVAS_HEIGHT/2 + 100 + 10 + 110)
 
 end
 
