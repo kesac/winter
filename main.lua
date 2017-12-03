@@ -70,8 +70,6 @@ function love.draw()
     love.graphics.print("FPS: ".. love.timer.getFPS(), 10, 10)
   end
 
-  love.graphics.points(400, 300)
-
   game.tlfres.endRendering()
 
 end

@@ -14,9 +14,10 @@ local world = {}
 world.camera = require 'libtsl.camera'
 world.camera.screenWidth = GAME_CANVAS_WIDTH
 world.camera.screenHeight = GAME_CANVAS_HEIGHT
-
 world.maps = require 'libtsl.map-manager'
 world.player = require 'player'
+
+world.maps.addObserver(world.camera)
 
 --[[]]
 world.player.canMove = function(tileX, tileY) -- overrides existing function

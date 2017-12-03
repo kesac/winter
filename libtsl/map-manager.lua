@@ -12,7 +12,8 @@
   * Rendering map data on screen
 --]]
 
-local lib         = { alpha = 255 }
+local lib         = require('libtsl.observable').new()
+lib.alpha         = 255
 --local canvas      = love.graphics.newCanvas(800, 600)
 local canvasBelow = love.graphics.newCanvas(GAME_CANVAS_WIDTH, GAME_CANVAS_HEIGHT)
 local canvasAbove = love.graphics.newCanvas(GAME_CANVAS_WIDTH, GAME_CANVAS_HEIGHT)
@@ -25,8 +26,14 @@ local tileMath    = require 'libtsl.tile-math'
 function lib.setCurrentMap(id)
   if maps[id] then
     currentMap = maps[id]
-    canvasBelow = love.graphics.newCanvas(maps[id].tileColumns * TILE_WIDTH, maps[id].tileColumns * TILE_WIDTH)
-    canvasAbove = love.graphics.newCanvas(maps[id].tileColumns * TILE_WIDTH, maps[id].tileColumns * TILE_WIDTH)
+
+    local newWidth = maps[id].tileColumns * TILE_WIDTH
+    local newHeight = maps[id].tileRows * TILE_WIDTH
+
+    canvasBelow = love.graphics.newCanvas(newWidth, newHeight)
+    canvasAbove = love.graphics.newCanvas(newWidth, newHeight)
+
+    lib.notifyObservers('mapsizechange', {width = newWidth, height = newHeight})
     -- canvasDrawn = false
   end
 end

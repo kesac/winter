@@ -1,7 +1,7 @@
 
 -- [Ice Project 2 (2017), turtlesort.com]
 
-local player = {}
+local player = require('libtsl.observable').new()
 player.x = 0
 player.y = 0
 player.canMove = true
@@ -30,6 +30,8 @@ end
 function player._movementComplete()
 
   player.flux = nil -- order of this statement matters
+
+  player.notifyObservers('playermove', {newX = player.getTileX(), newY = player.getTileY()})
 
   if player.nextMove then
     player.nextMove()
