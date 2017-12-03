@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2012 Kevin Sacro
+	Copyright (c) 2017 Kevin Sacro
 
 	Permission is hereby granted, free of charge, to any person obtaining a
 	copy of this software and associated documentation files (the "Software"),
@@ -20,7 +20,12 @@
 	USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
--- An interface for observable objects.
+-- Simulates an interface for observable objects.
+--
+-- Example usage:
+--	local obs = require('observable').new()
+--  obs.notifyObservers('example-event', {type='example', desc='this is an example event'})
+--
 
 local lib = {}
 
@@ -35,10 +40,9 @@ function lib.new() -- works around require
 		table.insert(observable._observers,observer)
 	end
 
-	function observable.notifyObservers(event, ...)
-
+	function observable.notifyObservers(event, values)
 		for _, observer in pairs(observable._observers) do
-			if observer.notify then observer.notify(event, ...) end
+			if observer.notify then observer.notify(event, values) end
 		end
 
 	end
