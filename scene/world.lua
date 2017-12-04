@@ -11,11 +11,12 @@
 
 local scene = {}
 local world = {}
-world.camera = require 'libtsl.camera'
-world.camera.screenWidth = GAME_CANVAS_WIDTH
-world.camera.screenHeight = GAME_CANVAS_HEIGHT
+
 world.maps = require 'libtsl.map-manager'
 world.player = require 'player'
+world.camera = require 'camera'
+world.camera.screenWidth = GAME_CANVAS_WIDTH
+world.camera.screenHeight = GAME_CANVAS_HEIGHT
 
 world.maps.addObserver(world.camera)
 
@@ -65,15 +66,11 @@ function scene.update(dt)
 end
 
 function scene.draw()
-
-  love.graphics.push()
-  love.graphics.translate(world.camera.x, world.camera.y)
-  love.graphics.scale(world.camera.scale)
+  world.camera.start()
   world.maps.drawBelow()
   world.player.draw()
   world.maps.drawAbove()
-  love.graphics.pop()
-
+  world.camera.stop()
 end
 
 function scene.keypressed(key,unicode)
