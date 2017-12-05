@@ -130,18 +130,29 @@ function scene.keypressed(key,unicode)
 
   if key == 'left' or key == 'a' then
     menu.currentButtonIndex = menu.currentButtonIndex - 1
-    if menu.currentButtonIndex <= 0 then menu.currentButtonIndex = 1 end
+    if menu.currentButtonIndex <= 0 then
+      menu.currentButtonIndex = 1
+    else
+      game.audio.play('sfx-menu')
+    end
+
   end
 
   if key == 'right' or key == 'd' then
     menu.currentButtonIndex = menu.currentButtonIndex + 1
-    if menu.currentButtonIndex > #menu.buttons then menu.currentButtonIndex = #menu.buttons end
+    if menu.currentButtonIndex > #menu.buttons then
+      menu.currentButtonIndex = #menu.buttons
+    else
+      game.audio.play('sfx-menu')
+    end
   end
 
   if key == 'space' or key == 'enter' then
     if menu.currentButtonIndex == 1 then
       sceneManager.transitionTo('world')
     end
+
+    game.audio.play('sfx-confirm')
   end
 
 end

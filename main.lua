@@ -30,7 +30,10 @@ function love.load()
 
   -- Setup
 
-  game.audio.add('music/FantasyOrchestralTheme_lq.ogg','stream',"bgm-title",1)
+  game.audio.add('music/FantasyOrchestralTheme_lq.ogg','stream',"bgm-title")
+  game.audio.add('sfx/menu.wav','static',"sfx-menu")
+  game.audio.add('sfx/confirm.wav','static',"sfx-confirm")
+
   game.audio.enabled = not DEBUG_MODE -- TODO: Re-enable before deploying
 
   game.font.setDefaultFont('fonts/PressStart2P/PressStart2P.ttf')
