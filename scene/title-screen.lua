@@ -1,4 +1,5 @@
 
+-- This is a protoype title screen for test purposes only
 
 local scene = {}
 scene._manager = nil

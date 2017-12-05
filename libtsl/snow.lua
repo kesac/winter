@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2012 Kevin Sacro
+	Copyright (c) 2012, 2017 Kevin Sacro
 
 	Permission is hereby granted, free of charge, to any person obtaining a
 	copy of this software and associated documentation files (the "Software"),
@@ -37,6 +37,7 @@ local snowtimer = 0
 local snowfrequency = 0.035 -- in seconds
 
 snowmanager.on = false
+snowmanager.angle = math.pi*3/2 - math.pi/20
 
 -- Instantiates a new snowflake entity in the game.
 function snowmanager.newflake()
@@ -47,13 +48,13 @@ function snowmanager.newflake()
 		snowflake = game.entity.new(
 			math.random(0,love.graphics.getWidth()+150),
 			-10,
-			math.pi*3/2 - math.pi/20,
+			snowmanager.angle,
 			math.random(30,90)
 		)
 		instantiated = instantiated + 1
 	else
 		snowflake = table.remove(recycle)
-		snowflake.x = math.random(0,love.graphics.getWidth()+150)
+		snowflake.x = math.random(0,love.graphics.getWidth()+200)
 		snowflake.y = -10
 		recycled = recycled + 1
 	end

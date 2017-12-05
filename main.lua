@@ -6,7 +6,7 @@ function love.load()
   -- Global constants
   TILE_WIDTH  = 32
   TILE_HEIGHT = 32
-  GAME_CANVAS_WIDTH = 800
+  GAME_CANVAS_WIDTH = 800 -- canvas dimensions don't affect supported resolutions
   GAME_CANVAS_HEIGHT = 600
   GAME_POINT_SIZE = 1
   DEBUG_MODE  = false
@@ -39,11 +39,13 @@ function love.load()
   game.addScene(require 'scene.test-text-1', 'test-text-1')
   game.addScene(require 'scene.test-text-2', 'test-text-2')
   game.addScene(require 'scene.world', 'world')
-  game.addScene(require 'scene.title-menu', 'title-menu')
+  game.addScene(require 'scene.title-screen', 'title-screen')
+  game.addScene(require 'scene.title-screen-2', 'title-screen-2')
 
   -- game.setCurrentScene('test-text-1')
-  game.setCurrentScene('world')
-  game.setCurrentScene('title-menu')
+  -- game.setCurrentScene('world')
+  -- game.setCurrentScene('title-screen')
+  game.setCurrentScene('title-screen-2')
 
 end
 
