@@ -1,0 +1,9 @@
+[jetrel-exterior-parallaxBG1-2x.png]
+  Source: https://opengameart.org/content/castle-platformer
+  License: CC0 (Public Domain)
+  Modifications: Resized
+  Art by Jetrel
+
+[game-logo-1-*]
+  Source: created specifically for this game
+ 
