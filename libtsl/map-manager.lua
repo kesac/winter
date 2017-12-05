@@ -33,7 +33,13 @@ function lib.setCurrentMap(id)
     canvasBelow = love.graphics.newCanvas(newWidth, newHeight)
     canvasAbove = love.graphics.newCanvas(newWidth, newHeight)
 
-    lib.notifyObservers('mapchange', {name = id, width = newWidth, height = newHeight})
+    lib.notifyObservers('mapchange', {
+      mapName = id,
+      width = newWidth,
+      height = newHeight,
+      isSolidTile = lib._isSolidTile,
+      getTileEvents = nil
+    })
     -- canvasDrawn = false
   end
 end
@@ -218,7 +224,7 @@ function lib.loadMap(id, data)
 end
 
 -- tile coordinates are 0-indexed! (The top left tile of any map is 0,0)
-function lib.isCollidable(tileX, tileY)
+function lib._isSolidTile(tileX, tileY)
 
   if tileX < 0 or tileY < 0 then
     -- if DEBUG_MODE then print('isCollidable: tileX ('.. tileX ..') < 0 or tileY ('.. tileY ..') < 0') end

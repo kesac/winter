@@ -8,7 +8,14 @@ player.canMove = true
 player.tileMoveTime = 0.22 -- Time it takes to move from one tile to the next
 player.direction = 'down'
 player.flux = nil
+player._isSolidTile = nil
 
+-- Events received from other game components
+function player.notify(event, values)
+  if event == 'mapchange' then
+    player._isSolidTile = values.isSolidTile
+  end
+end
 
 function player.getTileX() -- tile coordinates are 0-indexed!
   return math.floor(player.x / TILE_WIDTH)
@@ -50,8 +57,8 @@ function player._movementComplete()
 end
 
 function player._canMove(tileX, tileY)
-  if player.canMove then  -- canMove (without the underscore) is meant to be defined outside of this table (in the world scene)
-    return player.canMove(tileX, tileY)
+  if player._isSolidTile then  -- canMove (without the underscore) is meant to be defined outside of this table (in the world scene)
+    return not player._isSolidTile(tileX, tileY)
   else
     return true -- if it's not, we permit any movement
   end

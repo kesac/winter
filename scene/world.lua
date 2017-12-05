@@ -19,8 +19,9 @@ world.camera.screenWidth = GAME_CANVAS_WIDTH
 world.camera.screenHeight = GAME_CANVAS_HEIGHT
 
 world.maps.addObserver(world.camera)
+world.maps.addObserver(world.player)
 
---[[]]
+--[[
 world.player.canMove = function(tileX, tileY) -- overrides existing function
   return not world.maps.isCollidable(tileX, tileY)
 end

@@ -34,6 +34,14 @@ camera.stayInMapBounds = true
 camera.mapWidth = nil
 camera.mapHeight = nil
 
+-- Events received from other game components
+function camera.notify(event, values)
+  if event == 'mapchange' then
+    camera.mapWidth = values.width
+    camera.mapHeight = values.height
+  end
+end
+
 -- Call this before the draw routine
 function camera.start()
   love.graphics.push()
@@ -44,14 +52,6 @@ end
 -- Call this after the end of the draw routine
 function camera.stop()
   love.graphics.pop()
-end
-
--- Events received from other game components
-function camera.notify(event, values)
-  if event == 'mapchange' then
-    camera.mapWidth = values.width
-    camera.mapHeight = values.height
-  end
 end
 
 -- Smoothly moves to the desired x,y coordinates
