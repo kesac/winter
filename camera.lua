@@ -46,12 +46,12 @@ function camera.stop()
   love.graphics.pop()
 end
 
+-- Events received from other game components
 function camera.notify(event, values)
-  if event == 'mapsizechange' then
+  if event == 'mapchange' then
     camera.mapWidth = values.width
     camera.mapHeight = values.height
   end
-
 end
 
 -- Smoothly moves to the desired x,y coordinates

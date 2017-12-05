@@ -33,7 +33,7 @@ function lib.setCurrentMap(id)
     canvasBelow = love.graphics.newCanvas(newWidth, newHeight)
     canvasAbove = love.graphics.newCanvas(newWidth, newHeight)
 
-    lib.notifyObservers('mapsizechange', {width = newWidth, height = newHeight})
+    lib.notifyObservers('mapchange', {name = id, width = newWidth, height = newHeight})
     -- canvasDrawn = false
   end
 end
