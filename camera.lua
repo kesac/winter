@@ -24,8 +24,8 @@ camera._targetEntity = nil
 -- These should be the value of the game canvas dimensions,
 -- which is expected not to change even if the window is
 -- is resized.
-camera.screenWidth = 800
-camera.screenHeight = 600
+camera.screenWidth = GAME_CANVAS_WIDTH
+camera.screenHeight = GAME_CANVAS_HEIGHT
 
 -- The camera will try its best to "stay" within the map
 -- if it knows the dimensions of the map. This ensures that

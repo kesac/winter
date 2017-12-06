@@ -18,7 +18,7 @@ function love.load()
   game.font    = require 'libtsl.font'
   game.textbox = require 'libtsl.textbox'
   game.entity  = require 'libtsl.entity'
-  game.audio  = require 'libtsl.audio'
+  game.audio   = require 'libtsl.audio'
 
   -- External libraries for love2d games
   game.flux   = require 'lib.flux'

@@ -38,7 +38,7 @@ function player._movementComplete()
 
   player.flux = nil -- order of this statement matters
 
-  player.notifyObservers('playermove', {newX = player.getTileX(), newY = player.getTileY()})
+  player.notifyObservers('playermove', {tileX = player.getTileX(), tileY = player.getTileY()})
 
   if player.nextMove then
     player.nextMove()

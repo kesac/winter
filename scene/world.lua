@@ -15,21 +15,22 @@ local world = {}
 world.maps = require 'libtsl.map-manager'
 world.player = require 'player'
 world.camera = require 'camera'
-world.camera.screenWidth = GAME_CANVAS_WIDTH
-world.camera.screenHeight = GAME_CANVAS_HEIGHT
 
 world.maps.addObserver(world.camera)
 world.maps.addObserver(world.player)
-
---[[
-world.player.canMove = function(tileX, tileY) -- overrides existing function
-  return not world.maps.isCollidable(tileX, tileY)
-end
---]]
+world.player.addObserver(scene)
 
 world.entities = {}
 world.entities.all = {}
 world.entities.current = {}
+
+-- Events received from other game components
+function scene.notify(event, values)
+  if event == 'playermove' then
+    local tileX = values.tileX
+    local tileY = values.tileY
+  end
+end
 
 function scene.initialize(manager)
     world.maps.loadTileset('meta-tileset', 'maps/tilesets/meta-tileset.png', TILE_WIDTH, TILE_HEIGHT)
