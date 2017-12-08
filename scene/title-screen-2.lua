@@ -13,8 +13,13 @@ local logo = {
   transitionLength = 5,
   states = {
     {
+      image = love.graphics.newImage('images/game-logo-2.png'),
+      alpha = 255,
+      visible = true
+    }
+    --[[
+    {
       image = love.graphics.newImage('images/game-logo-1-bw.png'),
-
       alpha = 255,
       visible = true
     },
@@ -23,11 +28,12 @@ local logo = {
       alpha = 0,
       visible = true
     }
+    --]]
   }
 }
 
 local menu = {
-  font = game.font.get(20),
+  font = game.font.get(24),
   highlightColor = {255, 255, 255, 255},
   defaultColor = {180, 180, 180, 255},
   currentButtonIndex = 1,
@@ -75,8 +81,8 @@ function scene.load()
     snow.angle = math.pi*3/2 - math.pi/8
     snow.fillscreen()
 
-    game.flux.to(logo.states[1], logo.transitionLength*3, {alpha = 0}):ease("quadinout")
-    game.flux.to(logo.states[2], logo.transitionLength, {alpha = 255}):ease("quadinout")
+    --game.flux.to(logo.states[1], logo.transitionLength*3, {alpha = 0}):ease("quadinout")
+    --game.flux.to(logo.states[2], logo.transitionLength, {alpha = 255}):ease("quadinout")
 
     game.audio.loop(music)
 end
@@ -108,7 +114,7 @@ function scene.draw()
   for i=1, #logo.states, 1 do
     local state = logo.states[i]
     love.graphics.setColor(255, 255, 255, state.alpha)
-    love.graphics.draw(state.image, GAME_CANVAS_WIDTH/2 - parallaxImage:getWidth()/2 - 20, 30, 0, 1.2, 1.2)
+    love.graphics.draw(state.image, GAME_CANVAS_WIDTH/2 - parallaxImage:getWidth()/2 - 20, 140, 0, 1, 1)
   end
 
   love.graphics.setFont(menu.font)

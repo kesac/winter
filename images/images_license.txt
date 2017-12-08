@@ -4,6 +4,5 @@
   Modifications: Resized
   Art by Jetrel
 
-[game-logo-1-*]
+[game-logo-*]
   Source: created specifically for this game
- 
