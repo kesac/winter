@@ -11,6 +11,7 @@
 
 local scene = {}
 local world = {}
+local sceneManager = nil
 
 world.maps = require 'libtsl.map-manager'
 world.player = require 'player'
@@ -26,13 +27,39 @@ world.entities.current = {}
 
 -- Events received from other game components
 function scene.notify(event, values)
+
   if event == 'playermove' then
-    local tileX = values.tileX
-    local tileY = values.tileY
+    local tileEvents = world.maps.getTileEvents(values.tileX, values.tileY, 'OnEnter')
+    for _, tileEvent in pairs(tileEvents) do
+
+      if tileEvent['WarpTo'] then
+        local args = game.utf8.split2(tileEvent['WarpTo'], ' ')
+
+        local mapId = args[1]
+        local tileX = tonumber(args[2])
+        local tileY = tonumber(args[3])
+
+        -- yes world scene is transitioning to itself
+        -- so there is a fade out and back in to cover
+        -- map and player location change
+        sceneManager.transitionTo('world', function()
+          world.maps.setCurrentMap(mapId)
+          world.player.setTile(tileX, tileY)
+        end)
+      end
+
+      if tileEvent['Call'] then
+        --
+      end
+
+    end
   end
 end
 
 function scene.initialize(manager)
+
+    sceneManager = manager
+
     world.maps.loadTileset('meta-tileset', 'maps/tilesets/meta-tileset.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.loadTileset('gb-1-main', 'maps/tilesets/gb-1-main.png', TILE_WIDTH, TILE_HEIGHT)
     world.maps.loadTileset('gb-3-flora', 'maps/tilesets/gb-3-flora.png', TILE_WIDTH, TILE_HEIGHT)
@@ -49,7 +76,7 @@ function scene.initialize(manager)
 end
 
 function scene.load()
-    world.player.setTile(0, 0)
+    world.player.setTile(1,1)
     world.camera.follow(world.player)
     love.graphics.setDefaultFilter('nearest', 'nearest')
 end

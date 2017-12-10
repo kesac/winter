@@ -21,9 +21,10 @@ function love.load()
   game.audio   = require 'libtsl.audio'
 
   -- External libraries for love2d games
-  game.flux   = require 'lib.flux'
-  game.anim8  = require 'lib.anim8'
-  game.tlfres = require 'lib.tlfres'
+  game.flux    = require 'lib.flux'
+  game.anim8   = require 'lib.anim8'
+  game.tlfres  = require 'lib.tlfres'
+  game.inspect = require 'lib.inspect'
 
   -- Languages
   game.text   = require 'text.english'
@@ -44,6 +45,7 @@ function love.load()
   game.addScene(require 'scene.world', 'world')
   game.addScene(require 'scene.title-screen', 'title-screen')
   game.addScene(require 'scene.title-screen-2', 'title-screen-2')
+
 
   -- game.setCurrentScene('test-text-1')
   -- game.setCurrentScene('world')
