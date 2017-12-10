@@ -41,6 +41,8 @@ function lib.setCurrentMap(id)
       getTileEvents = nil
     })
     -- canvasDrawn = false
+  else
+    error('Invalid map ID received: ' .. id)
   end
 end
 
@@ -142,6 +144,7 @@ function lib.loadMap(id, data)
   map.layersBelow = {} -- list of tile layers to be rendered below player
   map.layersAbove = {} -- list of tile layers to be rendered above player
   map.collision = {} -- keys are tile x,y coordinates as single strings with no spaces delimited by a single comma
+  map.events = {} -- list of event objects
 
   -- If a map uses more than one tileset, the tile indexes can have offsets (to differentiate
   -- different tilesets). We need to capture that offset here so that the draw routine can
@@ -191,9 +194,40 @@ function lib.loadMap(id, data)
     layer.name = l.name             -- so layer 'player' can be identified
     layer.type = l.type             -- only type 'tilelayer' can get drawn
     layer.properties = l.properties -- to parse triggers and events
-    layer.data = l.data             -- this is expected to be a list of tile
+
+    if layer.type == 'tilelayer' then
+      layer.data = l.data           -- this is expected to be a list of tile
                                     --   indexes that can be used to select
                                     --   the exact quad on the tileset image
+    end
+
+    if layer.name == 'Events' and layer.type == 'objectgroup' then
+      layer.visible = DEBUG_MODE
+      for _, object in pairs(l.objects) do
+        local event = {
+          map = map.id,
+          name = object.name,
+          type = object.type,
+          topLeft = {
+            x = object.x,
+            y = object.y
+          },
+          bottomRight = {
+            x = object.x + object.width,
+            y = object.y + object.height
+          }
+        }
+
+        for action, arguments in pairs(object.properties) do
+          event[action] = arguments
+        end
+
+        print(game.inspect(event))
+
+        table.insert(map.events, event)
+      end
+    end
+
     if layer.name == 'Collision' then
       layer.visible = DEBUG_MODE
       for mapTileIndex, tileValue in pairs(layer.data) do
@@ -221,6 +255,29 @@ function lib.loadMap(id, data)
 
   maps[id] = map
 
+end
+
+-- Returns tile events of current map at specified tile coordinates
+-- triggerType can be one of 'OnEnter', 'Interact'
+function lib.getTileEvents(tileX, tileY, triggerType)
+  local targetX = tileX * TILE_WIDTH + TILE_WIDTH/2
+  local targetY = tileY * TILE_WIDTH + TILE_WIDTH/2
+
+  local resultEvents = {}
+
+  if currentMap then
+    for _, event in ipairs(currentMap.events) do
+      if event.type == triggerType then
+        if event.topLeft.x <= targetX and event.bottomRight.x >= targetX then
+          if event.topLeft.y <= targetY and event.bottomRight.y >= targetY then
+            table.insert(resultEvents, event)
+          end
+        end
+      end
+    end
+  end
+
+  return resultEvents
 end
 
 -- tile coordinates are 0-indexed! (The top left tile of any map is 0,0)
