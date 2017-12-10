@@ -8,7 +8,7 @@ return {
   height = 30,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 5,
+  nextobjectid = 7,
   properties = {},
   tilesets = {
     {
@@ -669,14 +669,14 @@ return {
           name = "Warp to world map",
           type = "OnEnter",
           shape = "rectangle",
-          x = 3.5,
+          x = 8.83333,
           y = 6.16667,
           width = 20,
           height = 143.5,
           rotation = 0,
           visible = true,
           properties = {
-            ["WarpTo"] = "prototype"
+            ["WarpTo"] = "prototype 6 5"
           }
         }
       }
