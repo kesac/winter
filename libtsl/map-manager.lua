@@ -25,7 +25,16 @@ local tileMath    = require 'libtsl.tile-math'
 
 function lib.setCurrentMap(id)
   if maps[id] then
+
+    if currentMap and currentMap.script and currentMap.script.unload then
+      currentMap.script.unload()
+    end
+
     currentMap = maps[id]
+
+    if currentMap.script and currentMap.script.load then
+      currentMap.script.load()
+    end
 
     local newWidth = maps[id].tileColumns * TILE_WIDTH
     local newHeight = maps[id].tileRows * TILE_WIDTH
@@ -257,6 +266,15 @@ function lib.loadMap(id, data)
 
 end
 
+function lib.loadMapScript(id, scriptTable)
+  if maps[id] then
+    maps[id].script = scriptTable
+    if scriptTable.initialize then
+      scriptTable.initialize()
+    end
+  end
+end
+
 -- Returns tile events of current map at specified tile coordinates
 -- triggerType can be one of 'OnEnter', 'Interact'
 function lib.getTileEvents(tileX, tileY, triggerType)
@@ -267,7 +285,7 @@ function lib.getTileEvents(tileX, tileY, triggerType)
 
   if currentMap then
     for _, event in ipairs(currentMap.events) do
-      if event.type == triggerType then
+      if event.type:lower() == triggerType:lower() then
         if event.topLeft.x <= targetX and event.bottomRight.x >= targetX then
           if event.topLeft.y <= targetY and event.bottomRight.y >= targetY then
             table.insert(resultEvents, event)
@@ -278,6 +296,10 @@ function lib.getTileEvents(tileX, tileY, triggerType)
   end
 
   return resultEvents
+end
+
+function lib.getMapScript()
+  if currentMap then return currentMap.script end
 end
 
 -- tile coordinates are 0-indexed! (The top left tile of any map is 0,0)

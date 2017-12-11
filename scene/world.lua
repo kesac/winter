@@ -21,39 +21,51 @@ world.maps.addObserver(world.camera)
 world.maps.addObserver(world.player)
 world.player.addObserver(scene)
 
+game.textbox.preDisplayText = function() world.player.canMove = false end
+game.textbox.postDisplayText = function() world.player.canMove = true end
+
 world.entities = {}
 world.entities.all = {}
 world.entities.current = {}
 
+
 -- Events received from other game components
 function scene.notify(event, values)
 
-  if event == 'playermove' then
-    local tileEvents = world.maps.getTileEvents(values.tileX, values.tileY, 'OnEnter')
+  if event == 'playermove' or event == 'playerinteract' then
+    local tileEvents = world.maps.getTileEvents(values.tileX, values.tileY, event)
     for _, tileEvent in pairs(tileEvents) do
+      if tileEvent['WarpTo'] then scene.tileEventWarpTo(tileEvent['WarpTo']) end
+      if tileEvent['Call'] then scene.tileEventCall(tileEvent['Call']) end
+    end -- for tileEvent
+  end -- if event
+end
 
-      if tileEvent['WarpTo'] then
-        local args = game.utf8.split2(tileEvent['WarpTo'], ' ')
+function scene.tileEventWarpTo(warpToArgs)
+  local args = game.utf8.split2(warpToArgs, ' ')
+  local mapId = args[1]
+  local tileX = tonumber(args[2])
+  local tileY = tonumber(args[3])
 
-        local mapId = args[1]
-        local tileX = tonumber(args[2])
-        local tileY = tonumber(args[3])
+  -- yes world scene is transitioning to itself
+  -- so there is a fade out and back in to cover
+  -- map and player location change
+  world.player.canMove = false
+  sceneManager.transitionTo('world', function()
+    world.maps.setCurrentMap(mapId)
+    world.player.setTile(tileX, tileY)
+    world.player.canMove = true
+  end)
+end
 
-        -- yes world scene is transitioning to itself
-        -- so there is a fade out and back in to cover
-        -- map and player location change
-        sceneManager.transitionTo('world', function()
-          world.maps.setCurrentMap(mapId)
-          world.player.setTile(tileX, tileY)
-        end)
-      end
+function scene.tileEventCall(callArgs)
+  local args = game.utf8.split2(callArgs, ' ')
 
-      if tileEvent['Call'] then
-        --
-      end
-
-    end
+  local mapScript = world.maps.getMapScript()
+  if mapScript and args[1] and mapScript[args[1]] then
+    mapScript[args[1]]()
   end
+
 end
 
 function scene.initialize(manager)
@@ -72,6 +84,7 @@ function scene.initialize(manager)
     world.maps.defineTileAnimation('overworld-water', 1, 1, 15)
     world.maps.loadMap('prototype', require 'maps.prototype')
     world.maps.loadMap('prototype2', require 'maps.prototype2')
+    world.maps.loadMapScript('prototype2', require 'maps.prototype2-script')
     world.maps.setCurrentMap('prototype2')
 end
 

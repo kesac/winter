@@ -40,16 +40,18 @@ function player._movementComplete()
 
   player.notifyObservers('playermove', {tileX = player.getTileX(), tileY = player.getTileY()})
 
-  if player.nextMove then
-    player.nextMove()
-  elseif love.keyboard.isDown('left','a') then
-    player.moveLeft()
-  elseif love.keyboard.isDown('right','d') then
-    player.moveRight()
-  elseif love.keyboard.isDown('up','w') then
-    player.moveUp()
-  elseif love.keyboard.isDown('down','s') then
-    player.moveDown()
+  if player.canMove then
+    if player.nextMove then
+      player.nextMove()
+    elseif love.keyboard.isDown('left','a') then
+      player.moveLeft()
+    elseif love.keyboard.isDown('right','d') then
+      player.moveRight()
+    elseif love.keyboard.isDown('up','w') then
+      player.moveUp()
+    elseif love.keyboard.isDown('down','s') then
+      player.moveDown()
+    end
   end
 
   player.nextMove = nil -- order of this statement matters
@@ -92,6 +94,28 @@ function player.moveDown()
   end
 end
 
+function player.interact()
+
+  local args = {}
+
+  if player.direction == 'up' then
+    args.tileX = player.getTileX()
+    args.tileY = player.getTileY() - 1
+  elseif player.direction == 'down' then
+    args.tileX = player.getTileX()
+    args.tileY = player.getTileY() + 1
+  elseif player.direction == 'right' then
+    args.tileX = player.getTileX() + 1
+    args.tileY = player.getTileY()
+  elseif player.direction == 'left' then
+    args.tileX = player.getTileX() - 1
+    args.tileY = player.getTileY()
+  end
+
+  player.notifyObservers('playerinteract', args)
+
+end
+
 function player.update(dt)
   -- animate player sprite
 end
@@ -106,7 +130,6 @@ function player.keypressed(key, scancode, isrepeat)
 
   if player.canMove then
     if not player.isMoving() then
-
       -- From stationary to initial movement to next tile
       if key == 'left' or key == 'a'  then
         player.moveLeft()
@@ -116,6 +139,8 @@ function player.keypressed(key, scancode, isrepeat)
         player.moveUp()
       elseif key == 'down' or key == 's' then
         player.moveDown()
+      elseif key == 'space' or key == 'enter' then
+        player.interact()
       end
     -- Allow player to queue up another move for better control
     else
