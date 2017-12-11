@@ -119,7 +119,7 @@
 </data>
  </layer>
  <objectgroup name="Events">
-  <object id="1" name="Warp to Prototype2" type="OnEnter" x="157.5" y="91.5" width="38.5" height="39.5">
+  <object id="1" name="Warp to Prototype2" type="PlayerMove" x="157.5" y="91.5" width="38.5" height="39.5">
    <properties>
     <property name="WarpTo" value="prototype2 2 1"/>
    </properties>

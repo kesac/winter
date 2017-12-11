@@ -312,7 +312,7 @@ return {
         {
           id = 1,
           name = "Warp to Prototype2",
-          type = "OnEnter",
+          type = "PlayerMove",
           shape = "rectangle",
           x = 157.5,
           y = 91.5,

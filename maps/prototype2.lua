@@ -8,7 +8,7 @@ return {
   height = 30,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 7,
+  nextobjectid = 10,
   properties = {},
   tilesets = {
     {
@@ -667,7 +667,7 @@ return {
         {
           id = 1,
           name = "Warp to world map",
-          type = "OnEnter",
+          type = "PlayerMove",
           shape = "rectangle",
           x = 8.83333,
           y = 6.16667,
@@ -677,6 +677,21 @@ return {
           visible = true,
           properties = {
             ["WarpTo"] = "prototype 6 5"
+          }
+        },
+        {
+          id = 7,
+          name = "Test Dialogue",
+          type = "PlayerInteract",
+          shape = "rectangle",
+          x = 163,
+          y = 35,
+          width = 26,
+          height = 25,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["Call"] = "testDialogue"
           }
         }
       }
