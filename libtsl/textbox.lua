@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2012 Kevin Sacro
+	Copyright (c) 2012, 2017 Kevin Sacro
 
 	Permission is hereby granted, free of charge, to any person obtaining a
 	copy of this software and associated documentation files (the "Software"),
@@ -189,8 +189,8 @@ function lib.draw()
 	if not lib.isVisible then return end
 
 	love.graphics.setFont(lib.font)
-	love.graphics.setColor(180,180,180)
-	love.graphics.rectangle('line', window.x, window.y, window.width, window.height)
+	--love.graphics.setColor(180,180,180)
+	--love.graphics.rectangle('line', window.x, window.y, window.width, window.height)
 	love.graphics.setColor(20,20,20)
 	love.graphics.rectangle('fill', window.x, window.y, window.width, window.height)
 
