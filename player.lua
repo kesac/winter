@@ -2,6 +2,8 @@
 -- [Ice Project 2 (2017), turtlesort.com]
 
 local player = require('libtsl.observable').new()
+local anim8  = require 'lib.anim8'
+
 player.x = 0
 player.y = 0
 player.canMove = true
@@ -9,6 +11,32 @@ player.tileMoveTime = 0.22 -- Time it takes to move from one tile to the next
 player.direction = 'down'
 player.flux = nil
 player._isSolidTile = nil
+
+player.sprite = {}
+player.sprite.image = love.graphics.newImage('gfx/charsets_warrior_2x.png')
+player.sprite.frameWidth = 32
+player.sprite.frameHeight = 36
+
+player.sprite.grid = anim8.newGrid(
+  player.sprite.frameWidth,
+  player.sprite.frameHeight,
+  player.sprite.image:getWidth(),
+  player.sprite.image:getHeight()
+)
+
+player.sprite.standing = {
+  up = anim8.newAnimation(player.sprite.grid(2,1),1),
+  right = anim8.newAnimation(player.sprite.grid(2,2),1),
+  down = anim8.newAnimation(player.sprite.grid(2,3),1),
+  left = anim8.newAnimation(player.sprite.grid(2,4),1)
+}
+
+player.sprite.moving = {
+  up = anim8.newAnimation(player.sprite.grid('1-3',1),0.1),
+  right = anim8.newAnimation(player.sprite.grid('1-3',2),0.1),
+  down = anim8.newAnimation(player.sprite.grid('1-3',3),0.1),
+  left = anim8.newAnimation(player.sprite.grid('1-3',4),0.1)
+}
 
 -- Events received from other game components
 function player.notify(event, values)
@@ -118,12 +146,28 @@ end
 
 function player.update(dt)
   -- animate player sprite
+  if player.isMoving() then
+    if player.sprite.moving[player.direction] then
+      player.sprite.moving[player.direction]:update(dt)
+    end
+  end
+
 end
 
 function player.draw()
   -- This will eventually handle rendering the player sprite
-  love.graphics.setColor(100,255,255)
-  love.graphics.circle('fill', math.floor(player.x), math.floor(player.y), 10)
+
+  love.graphics.setColor(255,255,255)
+  if player.isMoving() then
+    if player.sprite.moving[player.direction] then
+      player.sprite.moving[player.direction]:draw(player.sprite.image, math.floor(player.x - 16), math.floor(player.y - 18))
+    end
+  else
+    if player.sprite.standing[player.direction] then
+      player.sprite.standing[player.direction]:draw(player.sprite.image, player.x - 16, player.y - 18)
+    end
+  end
+
 end
 
 function player.keypressed(key, scancode, isrepeat)

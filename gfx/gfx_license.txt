@@ -1,0 +1,6 @@
+[charsets_12_m-f_complete_by_antifarea.png]
+  Source: https://opengameart.org/content/twelve-16x18-rpg-sprites-plus-base
+  License: CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+  Modifications: Resized
+  Art by Antifarea
+
