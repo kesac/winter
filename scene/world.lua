@@ -123,9 +123,9 @@ function scene.keypressed(key,unicode)
   if key == "1" then
     world.camera.zoom(1)
   elseif key == "2" then
-    world.camera.zoom(1.5)
+    world.camera.zoom(0.75)
   elseif key == "3" then
-    world.camera.zoom(4)
+    world.camera.zoom(1.5)
   elseif key == "4" then
     world.camera.move(0,0)
   elseif key == "5" then

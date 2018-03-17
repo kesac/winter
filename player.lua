@@ -14,6 +14,7 @@ player._isSolidTile = nil
 
 player.sprite = {}
 player.sprite.image = love.graphics.newImage('gfx/charsets_warrior_2x.png')
+player.sprite.image:setFilter('nearest','nearest')
 player.sprite.frameWidth = 32
 player.sprite.frameHeight = 36
 
@@ -32,10 +33,10 @@ player.sprite.standing = {
 }
 
 player.sprite.moving = {
-  up = anim8.newAnimation(player.sprite.grid('1-3',1),0.1),
-  right = anim8.newAnimation(player.sprite.grid('1-3',2),0.1),
-  down = anim8.newAnimation(player.sprite.grid('1-3',3),0.1),
-  left = anim8.newAnimation(player.sprite.grid('1-3',4),0.1)
+  up = anim8.newAnimation(player.sprite.grid('1-3',1, 2,1),0.15),
+  right = anim8.newAnimation(player.sprite.grid('1-3',2, 2,2),0.15),
+  down = anim8.newAnimation(player.sprite.grid('1-3',3, 2,3),0.15),
+  left = anim8.newAnimation(player.sprite.grid('1-3',4, 2,4),0.15)
 }
 
 -- Events received from other game components
@@ -160,11 +161,11 @@ function player.draw()
   love.graphics.setColor(255,255,255)
   if player.isMoving() then
     if player.sprite.moving[player.direction] then
-      player.sprite.moving[player.direction]:draw(player.sprite.image, math.floor(player.x - 16), math.floor(player.y - 18))
+      player.sprite.moving[player.direction]:draw(player.sprite.image, math.floor(player.x - 16), math.floor(player.y - 18 - 2))
     end
   else
     if player.sprite.standing[player.direction] then
-      player.sprite.standing[player.direction]:draw(player.sprite.image, player.x - 16, player.y - 18)
+      player.sprite.standing[player.direction]:draw(player.sprite.image, math.floor(player.x - 16), math.floor(player.y - 18 - 2))
     end
   end
 
