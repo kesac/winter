@@ -13,7 +13,7 @@ player.flux = nil
 player._isSolidTile = nil
 
 player.sprite = {}
-player.sprite.image = love.graphics.newImage('gfx/charsets_warrior_2x.png')
+player.sprite.image = love.graphics.newImage('gfx/charsets_warrior_bordered_2x.png')
 player.sprite.image:setFilter('nearest','nearest')
 player.sprite.frameWidth = 32
 player.sprite.frameHeight = 36
@@ -22,7 +22,10 @@ player.sprite.grid = anim8.newGrid(
   player.sprite.frameWidth,
   player.sprite.frameHeight,
   player.sprite.image:getWidth(),
-  player.sprite.image:getHeight()
+  player.sprite.image:getHeight(),
+  1, --left
+  1, --top
+  1 --border
 )
 
 player.sprite.standing = {
