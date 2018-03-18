@@ -4,8 +4,8 @@
 function love.load()
 
   -- Global constants
-  TILE_WIDTH  = 32
-  TILE_HEIGHT = 32
+  TILE_WIDTH  = 64
+  TILE_HEIGHT = 64
   GAME_CANVAS_WIDTH = 800 -- canvas dimensions don't affect supported resolutions
   GAME_CANVAS_HEIGHT = 600
   GAME_POINT_SIZE = 1

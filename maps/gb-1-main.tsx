@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="gb-1-main" tilewidth="32" tileheight="32" tilecount="360" columns="15">
- <image source="tilesets/gb-1-main.png" width="480" height="768"/>
+<tileset name="gb-1-main" tilewidth="64" tileheight="64" tilecount="1440" columns="15">
+ <image source="tilesets/gb-1-main.png" width="960" height="1536"/>
  <tile id="46">
   <animation>
    <frame tileid="46" duration="500"/>

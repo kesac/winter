@@ -6,6 +6,7 @@ local sceneManager = nil
 local music = 'bgm-title'
 local snow = require('libtsl.snow')
 
+local parallaxSpeed = 40
 local parallaxImage = love.graphics.newImage('images/jetrel-exterior-parallaxBG1-2x.png')
 local parallaxEntities = {}
 
@@ -69,7 +70,7 @@ function scene.initialize(manager)
     end
 
     for i = 1, totalParallaxClones, 1 do
-      local parallax = game.entity.new((i-1) * parallaxImage:getWidth(), 0, math.pi, 10)
+      local parallax = game.entity.new((i-1) * parallaxImage:getWidth(), 0, math.pi, parallaxSpeed)
       parallax.draw = parallaxDraw
       parallax.update = parallaxUpdate
       table.insert(parallaxEntities, parallax)
