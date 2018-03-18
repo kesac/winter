@@ -349,7 +349,7 @@ function lib._convertToInstructions(t)
 				elseif chararray[i+1] == '$' then -- Scroll speed
 
 					if value:match('%d+[%.%d+]?') then -- Terrible scrubbing
-						table.insert(new_instructions,message_scroll_delay*tonumber(value))
+						table.insert(new_instructions,DEFAULT_SCROLL_DELAY*tonumber(value))
 					else
 						table.insert(new_instructions,DEFAULT_SCROLL_DELAY)
 					end

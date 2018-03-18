@@ -164,11 +164,11 @@ function player.draw()
   love.graphics.setColor(255,255,255)
   if player.isMoving() then
     if player.sprite.moving[player.direction] then
-      player.sprite.moving[player.direction]:draw(player.sprite.image, math.floor(player.x - 16), math.floor(player.y - 18 - 2))
+      player.sprite.moving[player.direction]:draw(player.sprite.image, math.floor(player.x - 32), math.floor(player.y - 36 - 6))
     end
   else
     if player.sprite.standing[player.direction] then
-      player.sprite.standing[player.direction]:draw(player.sprite.image, math.floor(player.x - 16), math.floor(player.y - 18 - 2))
+      player.sprite.standing[player.direction]:draw(player.sprite.image, math.floor(player.x - 32), math.floor(player.y - 36 - 6))
     end
   end
 
